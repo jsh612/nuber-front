@@ -1,6 +1,11 @@
 import React from "react";
 import { IS_LOGGED_IN } from "./AppQueries";
+import { useQuery } from "@apollo/react-hooks";
 
-const AppContainer = ({ data }) => <div>{JSON.stringify(data)}</div>;
+const AppContainer = () => {
+  const { data } = useQuery(IS_LOGGED_IN);
+  console.log(data.auth.isLoggedIn);
+  return <div>{`${data.auth.isLoggedIn}`}</div>;
+};
 
-export default graphql(IS_LOGGED_IN)(AppContainer);
+export default AppContainer;
