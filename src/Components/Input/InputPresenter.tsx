@@ -24,10 +24,29 @@ const Input = styled.input`
 
 interface IProps {
   placeholder?: string;
+  type?: string;
+  required?: boolean;
+  value: string | undefined;
+  name?: string;
+  onChange: any;
 }
 
-const InputPresenter: React.FC<IProps> = ({ placeholder }) => (
-  <Input placeholder={placeholder} />
+const InputPresenter: React.FC<IProps> = ({
+  placeholder = "",
+  type = "text",
+  required = true,
+  value,
+  name = "",
+  onChange
+}) => (
+  <Input
+    type={type}
+    required={required}
+    value={value}
+    placeholder={placeholder}
+    name={name}
+    onChange={onChange}
+  />
 );
 
 export default InputPresenter;
