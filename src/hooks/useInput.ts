@@ -5,7 +5,7 @@ export default (defaultValue: string) => {
 
   const onChange: React.ChangeEventHandler<
     HTMLInputElement | HTMLSelectElement
-  > = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  > = event => {
     const {
       target: { value }
     } = event;
