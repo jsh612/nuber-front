@@ -3,19 +3,39 @@ import PhoneLoginPresenter from "./PhoneLoginPresenter";
 import { RouteComponentProps } from "react-router-dom";
 import useInput from "../../hooks/useInput";
 import { toast } from "react-toastify";
+import { useMutation } from "@apollo/react-hooks";
+import { PHONE_SIGN_IN } from "./PhoneQueries.queries";
+import {
+  startPhoneVerificationVariables,
+  startPhoneVerification
+} from "../../types/api";
 
 const PhoneLoginContainer: React.FC<RouteComponentProps> = () => {
   const phoneNumberInput = useInput("");
   const countryCodeInput = useInput("+82");
+  const realPhoneNumber = `${
+    countryCodeInput.value
+  }${phoneNumberInput.value.slice(1)}`;
 
-  const onSubmit: React.FormEventHandler<HTMLFormElement> = e => {
+  const [verifyPhoneMutation, { loading }] = useMutation<
+    startPhoneVerification,
+    startPhoneVerificationVariables
+  >(PHONE_SIGN_IN, {
+    variables: {
+      phoneNumber: realPhoneNumber
+    }
+  });
+
+  const onSubmit: React.FormEventHandler<HTMLFormElement> = async e => {
     e.preventDefault();
     console.log(`${countryCodeInput.value}${phoneNumberInput.value}`);
-    const isValid = /^\+[1-9]{1}[0-9]{7,11}$/.test(
-      `${countryCodeInput.value}${phoneNumberInput.value}`
-    );
+    console.log(realPhoneNumber);
+    const isValid = /^\+[1-9]{1}[0-9]{7,11}$/.test(realPhoneNumber);
     if (isValid) {
-      return;
+      const { data } = await verifyPhoneMutation();
+      if (data) {
+        console.log(data.StartPhoneVerification);
+      }
     } else {
       toast.error("올바른 휴대전화 번호를 입력해주세요");
     }
@@ -28,6 +48,7 @@ const PhoneLoginContainer: React.FC<RouteComponentProps> = () => {
       onInputChange={phoneNumberInput.onChange}
       onSelectChange={countryCodeInput.onChange}
       onSubmit={onSubmit}
+      loading={loading}
     />
   );
 };
