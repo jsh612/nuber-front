@@ -23,13 +23,15 @@ const PhoneLoginContainer: React.FC<RouteComponentProps> = () => {
   >(PHONE_SIGN_IN, {
     variables: {
       phoneNumber: realPhoneNumber
+    },
+    update: (cache, data) => {
+      // A function used to update the cache after a mutation occurs
+      console.log("이거", data);
     }
   });
 
   const onSubmit: React.FormEventHandler<HTMLFormElement> = async e => {
     e.preventDefault();
-    console.log(`${countryCodeInput.value}${phoneNumberInput.value}`);
-    console.log(realPhoneNumber);
     const isValid = /^\+[1-9]{1}[0-9]{7,11}$/.test(realPhoneNumber);
     if (isValid) {
       const { data } = await verifyPhoneMutation();
