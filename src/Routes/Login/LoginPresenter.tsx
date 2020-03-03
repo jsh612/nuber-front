@@ -1,7 +1,7 @@
 import React from "react";
-// import bgImage from "../../images/bg.png";
+import Helmet from "react-helmet";
 import styled from "styled-components";
-import { RouteComponentProps } from "react-router-dom";
+import { RouteComponentProps, Link } from "react-router-dom";
 
 const Container = styled.div`
   height: 100vh;
@@ -45,6 +45,7 @@ const FakeInput = styled.div`
 
 const PhoneLogin = styled.div`
   padding: 20px;
+  cursor: pointer;
 `;
 
 const Grey = styled.span`
@@ -55,6 +56,7 @@ const Grey = styled.span`
 const SocialLogin = styled.div`
   border-top: 1px solid ${props => props.theme.greyColor};
   padding: 30px 20px;
+  cursor: pointer;
 `;
 
 const SocialLink = styled.span`
@@ -66,24 +68,32 @@ interface IProps extends RouteComponentProps<any> {}
 
 const OutHomePresenter: React.FC<IProps> = () => (
   <Container>
+    <Helmet>
+      <title>Login | Nuber</title>
+    </Helmet>
     <Header>
       <Logo>
         <Title>Nuber</Title>
       </Logo>
     </Header>
+
     <Footer>
-      <PhoneLogin>
-        <Subtitle>Get moving with Nuber</Subtitle>
-        <FakeInput>
-          <span role="img" aria-label="태극기">
-            🇰🇷 +82{" "}
-          </span>
-          <Grey>Enter your mobile number</Grey>
-        </FakeInput>
-      </PhoneLogin>
-      <SocialLogin>
-        <SocialLink>Or connect with social</SocialLink>
-      </SocialLogin>
+      <Link to={"/phone-login"}>
+        <PhoneLogin>
+          <Subtitle>Get moving with Nuber</Subtitle>
+          <FakeInput>
+            <span role="img" aria-label="태극기">
+              🇰🇷 +82{" "}
+            </span>
+            <Grey>Enter your mobile number</Grey>
+          </FakeInput>
+        </PhoneLogin>
+      </Link>
+      <Link to={"/social-login"}>
+        <SocialLogin>
+          <SocialLink>Or connect with social</SocialLink>
+        </SocialLogin>
+      </Link>
     </Footer>
   </Container>
 );
