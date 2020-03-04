@@ -31,8 +31,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "precodegen": "apollo schema:download --endpoint=http://localhost:4000/graphql",
-    "codegen": "apollo codegen:generate src/types/api.d.ts --queries=src/**/*.queries.ts  --localSchemaFile=schema.json --target=typescript --outputFlat"
+    "precodegen": "apollo client:download-schema --endpoint=http://localhost:4000/graphql",
+    "codegen": "apollo client:codegen src/types/api.d.ts --queries=src/**/*.queries.ts  --localSchemaFile=schema.json --target=typescript --outputFlat"
   },
   "eslintConfig": {
     "extends": "react-app"

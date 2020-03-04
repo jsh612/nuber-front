@@ -11,7 +11,7 @@ interface IProps {
   className?: string;
 }
 
-const BackArrow: React.SFC<IProps> = ({ backTo, className }) => (
+const BackArrow: React.FC<IProps> = ({ backTo, className }) => (
   <Container className={className}>
     <Link to={backTo}>
       <svg
