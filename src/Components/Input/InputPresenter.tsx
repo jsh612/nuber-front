@@ -29,6 +29,7 @@ interface IProps {
   value: string | undefined;
   name?: string;
   onChange: any;
+  className?: string;
 }
 
 const InputPresenter: React.FC<IProps> = ({
@@ -37,7 +38,8 @@ const InputPresenter: React.FC<IProps> = ({
   required = true,
   value,
   name = "",
-  onChange
+  onChange,
+  className
 }) => (
   <Input
     type={type}
@@ -46,6 +48,7 @@ const InputPresenter: React.FC<IProps> = ({
     placeholder={placeholder}
     name={name}
     onChange={onChange}
+    className={className}
   />
 );
 

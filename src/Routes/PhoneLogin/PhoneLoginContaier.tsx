@@ -9,8 +9,9 @@ import {
   startPhoneVerificationVariables,
   startPhoneVerification
 } from "../../types/api";
+import routes from "../routes";
 
-const PhoneLoginContainer: React.FC<RouteComponentProps> = () => {
+const PhoneLoginContainer: React.FC<RouteComponentProps> = ({ history }) => {
   const phoneNumberInput = useInput("");
   const countryCodeInput = useInput("+82");
   const realPhoneNumber = `${
@@ -29,7 +30,18 @@ const PhoneLoginContainer: React.FC<RouteComponentProps> = () => {
         StartPhoneVerification: { ok, error }
       } = data;
       if (ok) {
-        console.log("onCompelte::", ok);
+        // 방법:1
+        // history.push({
+        //   pathname: routes.VERIFY_PHOEN,
+        //   state: {
+        //     phone: realPhoneNumber
+        //   }
+        // });
+
+        // 방법:2
+        history.push(routes.VERIFY_PHOEN, {
+          phone: realPhoneNumber
+        });
         return;
       } else {
         toast.error(error);

@@ -16,6 +16,7 @@ import Ride from "../../Routes/Ride";
 import Settings from "../../Routes/Settings";
 import SocialLogin from "../../Routes/SocialLogin";
 import VerifyPhone from "../../Routes/VerifyPhone";
+import routes from "../../Routes/routes";
 
 interface IProps {
   isLoggedIn: boolean;
@@ -27,24 +28,24 @@ const AppPresenter: React.FC<IProps> = ({ isLoggedIn }) => (
 
 const LoggedOutRoutes: React.FC = () => (
   <Switch>
-    <Route path={"/"} exact={true} component={Login} />
-    <Route path={"/phone-login"} component={PhoneLogin} />
-    <Route path={"/verify-phone/:number"} component={VerifyPhone} />
-    <Route path={"/social-login"} component={SocialLogin} />
-    <Redirect from={"*"} to={"/"} />
+    <Route path={routes.HOME} exact={true} component={Login} />
+    <Route path={routes.PHONE_LOGIN} component={PhoneLogin} />
+    <Route path={routes.VERIFY_PHOEN} component={VerifyPhone} />
+    <Route path={routes.SOCIAL_LOGIN} component={SocialLogin} />
+    <Redirect from={"*"} to={routes.HOME} />
   </Switch>
 );
 
 const LoggedInRoutes: React.FC = () => (
   <Switch>
-    <Route path={"/"} exact={true} component={Home} />
-    <Route path={"/ride"} exact={true} component={Ride} />
-    <Route path={"/edit-account"} exact={true} component={EditAccount} />
-    <Route path={"/settings"} exact={true} component={Settings} />
-    <Route path={"/places"} exact={true} component={Places} />
-    <Route path={"/add-place"} exact={true} component={AddPlace} />
-    <Route path={"/find-address"} exact={true} component={FindAddress} />
-    <Redirect from={"*"} to={"/"} />
+    <Route path={routes.HOME} exact={true} component={Home} />
+    <Route path={routes.RIDE} exact={true} component={Ride} />
+    <Route path={routes.EDIT_ACCOUNT} exact={true} component={EditAccount} />
+    <Route path={routes.SETTINGS} exact={true} component={Settings} />
+    <Route path={routes.PLACES} exact={true} component={Places} />
+    <Route path={routes.ADD_PLACE} exact={true} component={AddPlace} />
+    <Route path={routes.FIND_ADDRESS} exact={true} component={FindAddress} />
+    <Redirect from={"*"} to={routes.HOME} />
   </Switch>
 );
 
