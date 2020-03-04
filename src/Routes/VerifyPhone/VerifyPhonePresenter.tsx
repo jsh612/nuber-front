@@ -5,6 +5,7 @@ import Header from "../../Components/Header";
 import Input from "../../Components/Input";
 import styled from "styled-components";
 import Form from "../../Components/Form";
+import routes from "../routes";
 
 const Container = styled.div``;
 
@@ -33,7 +34,7 @@ const VerifyPhonePresenter: React.FC<IProps> = ({
     <Helmet>
       <title>Verify Phone | Number</title>
     </Helmet>
-    <Header backTo={"/phone-login"} title={"Verify Phone Number"} />
+    <Header backTo={routes.PHONE_LOGIN} title={"Verify Phone Number"} />
     <ExtendedForm submitFn={onSubmit}>
       <ExtendedInput
         value={value}

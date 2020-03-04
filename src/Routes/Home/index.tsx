@@ -1,5 +1,5 @@
 import React from "react";
 
-const R = () => <span>lala</span>;
+const R = () => <span>로그인되었따.</span>;
 
 export default R;
