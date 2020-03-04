@@ -28,7 +28,14 @@ interface IProps {
 }
 
 const Button: React.FC<IProps> = ({ value, onClick, disabled = false }) => {
-  return <Input value={value} disabled={disabled} onClick={onClick} />;
+  return (
+    <Input
+      value={value}
+      disabled={disabled}
+      onClick={onClick}
+      type={"submit"}
+    />
+  );
 };
 
 export default Button;

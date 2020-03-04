@@ -15,7 +15,12 @@ const ExtendedInput = styled(Input)`
   margin-bottom: 20px;
 `;
 
-const VerifyPhonePresenter = () => (
+interface IProps {
+  onChange: React.ChangeEventHandler<HTMLInputElement>;
+  value: string;
+}
+
+const VerifyPhonePresenter: React.FC<IProps> = ({ onChange, value }) => (
   <Container>
     <Helmet>
       <title>Verify Phone | Number</title>
@@ -23,9 +28,9 @@ const VerifyPhonePresenter = () => (
     <Header backTo={"/phone-login"} title={"Verify Phone Number"} />
     <Form>
       <ExtendedInput
-        value={""}
+        value={value}
         placeholder={"Enter Verification Code"}
-        onChange={null}
+        onChange={onChange}
       />
       <Button value={"Submit"} onClick={null} />
     </Form>

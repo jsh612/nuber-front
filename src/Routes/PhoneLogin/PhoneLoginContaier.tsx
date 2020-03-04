@@ -39,10 +39,12 @@ const PhoneLoginContainer: React.FC<RouteComponentProps> = ({ history }) => {
         // });
 
         // 방법:2
-        history.push(routes.VERIFY_PHOEN, {
-          phone: realPhoneNumber
-        });
-        return;
+        toast.success("문자가 발송되었습니다. 인증화면 이동합니다.");
+        setTimeout(() => {
+          history.push(routes.VERIFY_PHOEN, {
+            phone: realPhoneNumber
+          });
+        }, 2000);
       } else {
         toast.error(error);
       }
@@ -53,10 +55,7 @@ const PhoneLoginContainer: React.FC<RouteComponentProps> = ({ history }) => {
     e.preventDefault();
     const isValid = /^\+[1-9]{1}[0-9]{7,11}$/.test(realPhoneNumber);
     if (isValid) {
-      const { data } = await verifyPhoneMutation();
-      if (data) {
-        console.log(data.StartPhoneVerification);
-      }
+      return verifyPhoneMutation();
     } else {
       toast.error("올바른 휴대전화 번호를 입력해주세요");
     }
