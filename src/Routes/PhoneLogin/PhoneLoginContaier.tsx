@@ -24,9 +24,16 @@ const PhoneLoginContainer: React.FC<RouteComponentProps> = () => {
     variables: {
       phoneNumber: realPhoneNumber
     },
-    update: (cache, data) => {
-      // A function used to update the cache after a mutation occurs
-      console.log("이거", data);
+    onCompleted: data => {
+      const {
+        StartPhoneVerification: { ok, error }
+      } = data;
+      if (ok) {
+        console.log("onCompelte::", ok);
+        return;
+      } else {
+        toast.error(error);
+      }
     }
   });
 
