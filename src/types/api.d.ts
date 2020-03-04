@@ -4,20 +4,45 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL mutation operation: startPhoneVerification
+// GraphQL mutation operation: StartPhoneVerification
 // ====================================================
 
-export interface startPhoneVerification_StartPhoneVerification {
+export interface StartPhoneVerification_StartPhoneVerification {
   __typename: "StartPhoneVerificationResponse";
   ok: boolean;
   error: string | null;
 }
 
-export interface startPhoneVerification {
-  StartPhoneVerification: startPhoneVerification_StartPhoneVerification;
+export interface StartPhoneVerification {
+  StartPhoneVerification: StartPhoneVerification_StartPhoneVerification;
 }
 
-export interface startPhoneVerificationVariables {
+export interface StartPhoneVerificationVariables {
+  phoneNumber: string;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL mutation operation: verifyPhone
+// ====================================================
+
+export interface verifyPhone_CompletePhoneVerification {
+  __typename: "CompletePhoneVerificationResponse";
+  ok: boolean;
+  error: string | null;
+  token: string | null;
+}
+
+export interface verifyPhone {
+  CompletePhoneVerification: verifyPhone_CompletePhoneVerification;
+}
+
+export interface verifyPhoneVariables {
+  key: string;
   phoneNumber: string;
 }
 

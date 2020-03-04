@@ -6,8 +6,8 @@ import { toast } from "react-toastify";
 import { useMutation } from "@apollo/react-hooks";
 import { PHONE_SIGN_IN } from "./PhoneQueries.queries";
 import {
-  startPhoneVerificationVariables,
-  startPhoneVerification
+  StartPhoneVerificationVariables,
+  StartPhoneVerification
 } from "../../types/api";
 import routes from "../routes";
 
@@ -19,8 +19,8 @@ const PhoneLoginContainer: React.FC<RouteComponentProps> = ({ history }) => {
   }${phoneNumberInput.value.slice(1)}`;
 
   const [verifyPhoneMutation, { loading }] = useMutation<
-    startPhoneVerification,
-    startPhoneVerificationVariables
+    StartPhoneVerification,
+    StartPhoneVerificationVariables
   >(PHONE_SIGN_IN, {
     variables: {
       phoneNumber: realPhoneNumber
@@ -41,8 +41,14 @@ const PhoneLoginContainer: React.FC<RouteComponentProps> = ({ history }) => {
         // 방법:2
         toast.success("문자가 발송되었습니다. 인증화면 이동합니다.");
         setTimeout(() => {
-          history.push(routes.VERIFY_PHOEN, {
-            phone: realPhoneNumber
+          // history.push(routes.VERIFY_PHOEN, {
+          //   phone: realPhoneNumber
+          // });
+          history.push({
+            pathname: routes.VERIFY_PHOEN,
+            state: {
+              phone: realPhoneNumber
+            }
           });
         }, 2000);
       } else {
