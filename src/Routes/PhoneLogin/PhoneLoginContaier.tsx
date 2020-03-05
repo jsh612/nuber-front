@@ -14,9 +14,9 @@ import routes from "../routes";
 const PhoneLoginContainer: React.FC<RouteComponentProps> = ({ history }) => {
   const phoneNumberInput = useInput("");
   const countryCodeInput = useInput("+82");
-  const realPhoneNumber = `${
-    countryCodeInput.value
-  }${phoneNumberInput.value.slice(1)}`;
+  const realPhoneNumber = `${countryCodeInput.value}${
+    phoneNumberInput.value !== null ? phoneNumberInput.value.slice(1) : ""
+  }`;
 
   const [verifyPhoneMutation, { loading }] = useMutation<
     StartPhoneVerification,
@@ -69,8 +69,12 @@ const PhoneLoginContainer: React.FC<RouteComponentProps> = ({ history }) => {
 
   return (
     <PhoneLoginPresenter
-      countryCode={countryCodeInput.value}
-      phoneNumber={phoneNumberInput.value}
+      countryCode={
+        countryCodeInput.value !== null ? countryCodeInput.value : undefined
+      }
+      phoneNumber={
+        phoneNumberInput.value !== null ? phoneNumberInput.value : undefined
+      }
       onInputChange={phoneNumberInput.onChange}
       onSelectChange={countryCodeInput.onChange}
       onSubmit={onSubmit}

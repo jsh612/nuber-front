@@ -30,7 +30,7 @@ const VerifyPhoneContainer: React.FC<IProps> = ({ history, location }) => {
     verifyPhoneVariables
   >(VERIFY_PHONE, {
     variables: {
-      key: keyInput.value,
+      key: keyInput.value !== null ? keyInput.value : "",
       phoneNumber: phone
     },
     onCompleted: async data => {
@@ -58,7 +58,7 @@ const VerifyPhoneContainer: React.FC<IProps> = ({ history, location }) => {
   return (
     <VerifyPhonePresenter
       onChange={keyInput.onChange}
-      value={keyInput.value}
+      value={keyInput.value !== null ? keyInput.value : ""}
       onSubmit={verifyPhoneMutation}
       loading={loading}
     />
