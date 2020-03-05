@@ -32,8 +32,10 @@ const SocialLoginContainer: React.FC = () => {
     }
   });
 
-  const loginCallback = async response => {
-    const { name, first_name, last_name, email, id, accessToken } = response;
+  // 페북에서 인증 후, 실행되는 함수
+  // - 페북에서 보내준 데이터 가공하여 나의 앱에서 로그인 처리하는 함수
+  const loginCallback = async fbData => {
+    const { name, first_name, last_name, email, id, accessToken } = fbData;
     if (accessToken) {
       toast.success(`Welcome ${name}!`);
       await socialLoginMutation({
