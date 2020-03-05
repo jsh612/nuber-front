@@ -7,6 +7,7 @@ import styled from "styled-components";
 import Form from "../../Components/Form";
 import routes from "../routes";
 import { MutationTuple } from "@apollo/react-hooks";
+import { verifyPhoneVariables, verifyPhone } from "../../types/api";
 
 const Container = styled.div``;
 
@@ -22,7 +23,7 @@ interface IProps {
   onChange: React.ChangeEventHandler<HTMLInputElement>;
   value: string;
   loading: boolean;
-  onSubmit: MutationTuple<any, any>[0];
+  onSubmit: MutationTuple<verifyPhone, verifyPhoneVariables>[0];
 }
 
 const VerifyPhonePresenter: React.FC<IProps> = ({

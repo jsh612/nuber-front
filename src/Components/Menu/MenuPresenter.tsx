@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import routes from "../../Routes/routes";
 import { TTheme } from "../../theme";
-import { userProfile } from "../../types/api";
+import { userProfile, toggleDrivingMode } from "../../types/api";
+import { MutationTuple } from "@apollo/react-hooks";
 
 const Container = styled.div`
   height: 100%;
@@ -81,13 +82,23 @@ const ToggleDriving = styled.button`
 interface IProps {
   data?: userProfile;
   loading: boolean;
+  // 주석처리와 같이 하면 onClick 이벤트에서 타입 오류남
+  toggleDrivingFn: MutationTuple<toggleDrivingMode, any>[0];
 }
 
 const MenuPresenter: React.FC<IProps> = ({
   // data가 없는 경우에 대비한 구조 분해 할당
   data: { GetMyProfile: { user = null } = {} } = {},
-  loading
+  loading,
+  toggleDrivingFn
 }) => {
+  const [isDrivingBool, setIsDrivingBool] = useState(
+    user ? user.isDriving : false
+  );
+  const onClick = () => {
+    toggleDrivingFn();
+    setIsDrivingBool(!isDrivingBool);
+  };
   return (
     <Container>
       {!loading && user && user.fullName && (
@@ -110,8 +121,9 @@ const MenuPresenter: React.FC<IProps> = ({
           </Header>
           <SLink to="/trips">Your Trips</SLink>
           <SLink to={routes.SETTINGS}>Settings</SLink>
-          <ToggleDriving isDriving={user.isDriving}>
-            {user.isDriving ? "Stop driving" : "Start driving"}
+          <ToggleDriving onClick={onClick} isDriving={isDrivingBool}>
+            {/* {user.isDriving ? "Stop driving" : "Start driving"} */}
+            {isDrivingBool ? "Stop driving" : "Start driving"}
           </ToggleDriving>
         </React.Fragment>
       )}
