@@ -8,7 +8,7 @@ import routes from "../routes";
 import useInput from "../../hooks/useInput";
 import { VERIFY_PHONE } from "./VerifyPhone.queries";
 import { verifyPhone, verifyPhoneVariables } from "../../types/api";
-import { LOG_USER_IN } from "../../sharedQueries";
+import { LOG_USER_IN } from "../../sharedQueries.local";
 
 // location.state의 값을 가져오기위해  RouteComponentProps 의 제너릭 자리 중
 // 세번쨰가 location 관련이므로, any값을 넣어 준다

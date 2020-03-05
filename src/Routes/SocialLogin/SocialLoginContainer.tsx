@@ -5,7 +5,7 @@ import { FACEBOOK_CONNECT } from "./SocialLogin.queries";
 import { toast } from "react-toastify";
 
 import { facebookConnect, facebookConnectVariables } from "../../types/api";
-import { LOG_USER_IN } from "../../sharedQueries";
+import { LOG_USER_IN } from "../../sharedQueries.local";
 
 const SocialLoginContainer: React.FC = () => {
   const [userLogInMutation] = useMutation(LOG_USER_IN);
