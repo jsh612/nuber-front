@@ -6,6 +6,7 @@ import Input from "../../Components/Input";
 import styled from "styled-components";
 import Form from "../../Components/Form";
 import routes from "../routes";
+import { MutationTuple } from "@apollo/react-hooks";
 
 const Container = styled.div``;
 
@@ -21,7 +22,7 @@ interface IProps {
   onChange: React.ChangeEventHandler<HTMLInputElement>;
   value: string;
   loading: boolean;
-  onSubmit: any; // verifyPhoneMutation의 types를 몰라서 그냥 any로 해둠
+  onSubmit: MutationTuple<any, any>[0];
 }
 
 const VerifyPhonePresenter: React.FC<IProps> = ({
