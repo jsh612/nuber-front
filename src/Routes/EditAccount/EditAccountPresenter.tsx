@@ -8,6 +8,7 @@ import Form from "../../Components/Form";
 import Input from "../../Components/Input";
 import Button from "../../Components/Button";
 import Header from "../../Components/Header";
+import PhotoInput from "../../Components/PhotoInput";
 
 const Container = styled.div``;
 
@@ -31,6 +32,8 @@ interface IProps {
   profilePhoto: IData;
   loading: boolean;
   onSubmit: MutationTuple<updateProfile, updateProfileVariables>[0];
+  uploading: boolean;
+  uploadTrigger: React.ChangeEventHandler;
 }
 
 const EditAccountPresenter: React.FC<IProps> = ({
@@ -39,7 +42,9 @@ const EditAccountPresenter: React.FC<IProps> = ({
   email,
   onSubmit,
   profilePhoto,
-  loading
+  loading,
+  uploading,
+  uploadTrigger
 }) => {
   const onSubmitFn = () => {
     return onSubmit({
@@ -59,6 +64,11 @@ const EditAccountPresenter: React.FC<IProps> = ({
       </Helmet>
       <Header title={"Edit Account"} backTo={"/"} />
       <ExtendedForm submitFn={onSubmitFn}>
+        <PhotoInput
+          uploading={uploading}
+          fileUrl={profilePhoto.value ? profilePhoto.value : ""}
+          onChange={uploadTrigger}
+        />
         <ExtendedInput
           onChange={firstName.onChange}
           type={"text"}
