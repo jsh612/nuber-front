@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import routes from "../../Routes/routes";
 import { TTheme } from "../../theme";
+import { userProfile } from "../../types/api";
 
 const Container = styled.div`
   height: 100%;
@@ -77,29 +78,43 @@ const ToggleDriving = styled.button`
   cursor: pointer;
 `;
 
-const MenuPresenter: React.FC = () => {
+interface IProps {
+  data?: userProfile;
+  loading: boolean;
+}
+
+const MenuPresenter: React.FC<IProps> = ({
+  // data가 없는 경우에 대비한 구조 분해 할당
+  data: { GetMyProfile: { user = null } = {} } = {},
+  loading
+}) => {
   return (
     <Container>
-      <Header>
-        <Grid>
-          <Link to={routes.EDIT_ACCOUNT}>
-            <Image
-              src={
-                "https://yt3.ggpht.com/-CTwXMuZRaWw/AAAAAAAAAAI/AAAAAAAAAAA/HTJy-KJ4F2c/s88-c-k-no-mo-rj-c0xffffff/photo.jpg"
-              }
-            />
-          </Link>
-          <Text>
-            <Name>최고 운전사</Name>
-            <Rating>4.5</Rating>
-          </Text>
-        </Grid>
-      </Header>
-      <SLink to="/trips">Your Trips</SLink>
-      <SLink to={routes.SETTINGS}>Settings</SLink>
-      <ToggleDriving isDriving={true}>
-        {true ? "Stop driving" : "Start driving"}
-      </ToggleDriving>
+      {!loading && user && user.fullName && (
+        <React.Fragment>
+          <Header>
+            <Grid>
+              <Link to={routes.EDIT_ACCOUNT}>
+                <Image
+                  src={
+                    user.profilePhoto ||
+                    "https://lh3.googleusercontent.com/-CTwXMuZRaWw/AAAAAAAAAAI/AAAAAAAAAUg/8T5nFuIdnHE/photo.jpg"
+                  }
+                />
+              </Link>
+              <Text>
+                <Name>{user.fullName}</Name>
+                <Rating>4.5</Rating>
+              </Text>
+            </Grid>
+          </Header>
+          <SLink to="/trips">Your Trips</SLink>
+          <SLink to={routes.SETTINGS}>Settings</SLink>
+          <ToggleDriving isDriving={user.isDriving}>
+            {user.isDriving ? "Stop driving" : "Start driving"}
+          </ToggleDriving>
+        </React.Fragment>
+      )}
     </Container>
   );
 };

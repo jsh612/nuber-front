@@ -1,3 +1,5 @@
+// as const
+//  - 타입을 확정해 버린다.
 const theme = {
   blueColor: "#3498db",
   greenColor: "#1abc9c",

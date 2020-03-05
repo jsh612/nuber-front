@@ -9,13 +9,19 @@ interface IProps extends RouteComponentProps {}
 
 const HomeConainer: React.FC<IProps> = () => {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
-  const { data } = useQuery<userProfile>(USER_PROFILE);
+  const { data, loading } = useQuery<userProfile>(USER_PROFILE);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  return <HomePresenter isMenuOpen={isMenuOpen} toggleMenu={toggleMenu} />;
+  return (
+    <HomePresenter
+      isMenuOpen={isMenuOpen}
+      toggleMenu={toggleMenu}
+      loading={loading}
+    />
+  );
 };
 
 export default HomeConainer;
