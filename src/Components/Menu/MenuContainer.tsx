@@ -24,6 +24,7 @@ const MenuContainer: React.FC = () => {
     //         toast.error(ToggleDrivingMode.error);
     //         return;
     //       }
+    //       // cache에서 데이터를 가져올 떄 rerender 된다.
     //       const query: userProfile | null = cache.readQuery({
     //         query: USER_PROFILE
     //       });

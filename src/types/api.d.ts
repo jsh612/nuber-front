@@ -37,10 +37,10 @@ export interface updateProfile {
 }
 
 export interface updateProfileVariables {
-  firstName: string | null;
-  lastName: string | null;
-  email: string | null;
-  profilePhoto: string | null;
+  firstName?: string | null;
+  lastName?: string | null;
+  email?: string | null;
+  profilePhoto?: string | null;
 }
 
 /* tslint:disable */

@@ -54,6 +54,7 @@ const EditAccountContainer: React.FC<RouteComponentProps> = () => {
     updateProfile,
     updateProfileVariables
   >(UPDATE_PROFILE, {
+    // refetchQueries를 통해 기존 fetch한 user profile을 갱신
     refetchQueries: [{ query: USER_PROFILE }],
     onCompleted: data => {
       const { UpdateMyProfile } = data;

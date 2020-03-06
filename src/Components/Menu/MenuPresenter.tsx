@@ -82,7 +82,6 @@ const ToggleDriving = styled.button`
 interface IProps {
   data?: userProfile;
   loading: boolean;
-  // 주석처리와 같이 하면 onClick 이벤트에서 타입 오류남
   toggleDrivingFn: MutationTuple<toggleDrivingMode, any>[0];
 }
 

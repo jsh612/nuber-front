@@ -42,6 +42,7 @@ const PhotoInput: React.FC<IProps> = ({ uploading, fileUrl, onChange }) => {
   return (
     <Container>
       <Input id={"photo"} type="file" accept="image/*" onChange={onChange} />
+      {/* react에서는 for 대신 htmlFor를 사용(for는 자바스크립트의 예약어이므로, 기능은 동일) */}
       <Image htmlFor="photo">
         {uploading && "⏰"}
         {!uploading && <img src={fileUrl} alt="이미지" />}
