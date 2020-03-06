@@ -39,6 +39,8 @@ const FindAddressContainer: React.FC<IProps> = ({ google }) => {
       disableDefaultUI: true,
       zoom: 11
     };
+
+    // maps.Map(엘리먼트, 구글맵 옵션)
     setMap(new maps.Map(mapNode, mapConfig));
   };
 
