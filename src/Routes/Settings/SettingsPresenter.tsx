@@ -93,6 +93,7 @@ const SettingsPresenter: React.FC<IProps> = ({
           places &&
           places.map(place => (
             <Place
+              id={place!.id}
               key={place!.id}
               fav={place!.isFav}
               name={place!.name}
