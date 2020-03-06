@@ -13,7 +13,7 @@ const Input = styled.input`
     box-shadow: 0 0 0px 1000px white inset !important;
   }
   &:focus {
-    border-bottom-color: #2c3e50;
+    border-bottom-color: blue;
     outline: none;
   }
   &::placeholder {

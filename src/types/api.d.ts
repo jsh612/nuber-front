@@ -23,6 +23,33 @@ export interface toggleDrivingMode {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL mutation operation: addPlace
+// ====================================================
+
+export interface addPlace_AddPlace {
+  __typename: "AddPlaceRespons";
+  ok: boolean;
+  error: string | null;
+}
+
+export interface addPlace {
+  AddPlace: addPlace_AddPlace;
+}
+
+export interface addPlaceVariables {
+  name: string;
+  lat: number;
+  lng: number;
+  address: string;
+  isFav: boolean;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL mutation operation: updateProfile
 // ====================================================
 

@@ -41,7 +41,7 @@ interface IProps {
 const Place: React.FC<IProps> = ({ fav, name, address }) => {
   return (
     <SPlace>
-      <Icon>{fav ? "✩" : "★"}</Icon>
+      <Icon>{fav ? "★" : "✩"}</Icon>
       <Container>
         <Name>{name}</Name>
         <Address>{address}</Address>
