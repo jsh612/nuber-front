@@ -11,8 +11,8 @@ import { toast } from "react-toastify";
 const AddPlaceContainer: React.FC<RouteComponentProps> = ({ history }) => {
   const addressInput = useInput("");
   const placeNameInput = useInput("");
-  const [lat, setLat] = useState(1.34);
-  const [lng, setLng] = useState(1.34);
+  const [lat, setLat] = useState(0);
+  const [lng, setLng] = useState(0);
 
   const [addPlaceMutation, { loading }] = useMutation<
     addPlace,
@@ -45,6 +45,7 @@ const AddPlaceContainer: React.FC<RouteComponentProps> = ({ history }) => {
       name={placeNameInput}
       loading={loading}
       onSubmit={addPlaceMutation}
+      pickedAddress={lat !== 0 && lng !== 0}
     />
   );
 };

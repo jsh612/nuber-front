@@ -35,13 +35,15 @@ interface IProps {
   name: IData;
   loading: boolean;
   onSubmit: MutationTuple<addPlace, addPlaceVariables>[0];
+  pickedAddress: boolean;
 }
 
 const AddPlacePresenter: React.FC<IProps> = ({
   address,
   name,
   loading,
-  onSubmit
+  onSubmit,
+  pickedAddress
 }) => {
   const submitFn: React.FormEventHandler = e => {
     e.preventDefault();
@@ -72,10 +74,12 @@ const AddPlacePresenter: React.FC<IProps> = ({
           <ExtendedLink to={routes.FIND_ADDRESS}>
             Pick place from map
           </ExtendedLink>
-          <Button
-            onClick={null}
-            value={loading ? "Adding place" : "Add Place"}
-          />
+          {pickedAddress && (
+            <Button
+              onClick={null}
+              value={loading ? "Adding place" : "Add Place"}
+            />
+          )}
         </Form>
       </Container>
     </React.Fragment>
