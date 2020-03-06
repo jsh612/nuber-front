@@ -1,0 +1,2 @@
+export const basicProfilePhoto =
+  "https://lh3.googleusercontent.com/proxy/to8pRBHzSu3sGceP0_7LIi3bJuramIHuQGwfc3UCBd5iyYzfqnEgn9JqXxT-AlHz9t1znfi1jPr3dbjF-juSB6KIK6MKvEWBjOucL1fiXNSYEDXjJbLigfJMgHg0RWwFZ87ll4fRtTSbrf0a6Pk-lcn-fZTehSwsM9kxw6aUeQ";

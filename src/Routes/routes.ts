@@ -12,4 +12,4 @@ export default {
   RIDE: "/ride",
   SETTINGS: "/settings",
   PLACES: "/places"
-};
+} as const;

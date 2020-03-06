@@ -153,6 +153,34 @@ export interface userProfile {
 // @generated
 // This file was automatically generated and should not be edited.
 
+// ====================================================
+// GraphQL query operation: getMyPlaces
+// ====================================================
+
+export interface getMyPlaces_GetMyPlaces_places {
+  __typename: "Place";
+  id: number;
+  name: string;
+  address: string;
+  isFav: boolean;
+}
+
+export interface getMyPlaces_GetMyPlaces {
+  __typename: "GetMyPlacesResponse";
+  ok: boolean;
+  error: string | null;
+  places: (getMyPlaces_GetMyPlaces_places | null)[] | null;
+}
+
+export interface getMyPlaces {
+  GetMyPlaces: getMyPlaces_GetMyPlaces;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
 //==============================================================
 // START Enums and Input Objects
 //==============================================================
