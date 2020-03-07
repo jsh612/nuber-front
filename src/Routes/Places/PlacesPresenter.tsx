@@ -26,7 +26,7 @@ const PlacesPresenter: React.FC<IProps> = ({
   loading
 }) => {
   return (
-    <React.Fragment>
+    <>
       <Helmet>
         <title>Places | Number</title>
       </Helmet>
@@ -47,7 +47,7 @@ const PlacesPresenter: React.FC<IProps> = ({
           ))}
         <SLink to={routes.ADD_PLACE}>Add some places!</SLink>
       </Container>
-    </React.Fragment>
+    </>
   );
 };
 

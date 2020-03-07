@@ -70,7 +70,7 @@ const SettingsPresenter: React.FC<IProps> = ({
     return logUserOut();
   };
   return (
-    <React.Fragment>
+    <>
       <Helmet>
         <title>Settings | Nuber</title>
       </Helmet>
@@ -78,7 +78,7 @@ const SettingsPresenter: React.FC<IProps> = ({
       <Container>
         <GridLink to={routes.EDIT_ACCOUNT}>
           {!userDataLoading && user && user.email && user.fullName && (
-            <React.Fragment>
+            <>
               <Image
                 src={user.profilePhoto ? user.profilePhoto : basicProfilePhoto}
               />
@@ -86,7 +86,7 @@ const SettingsPresenter: React.FC<IProps> = ({
                 <Key>{user.fullName}</Key>
                 <Key>{user.email}</Key>
               </Keys>
-            </React.Fragment>
+            </>
           )}
         </GridLink>
         {!placesLoading &&
@@ -103,7 +103,7 @@ const SettingsPresenter: React.FC<IProps> = ({
         <SLink to={routes.PLACES}>Go to Places</SLink>
         <FakeLink onClick={onClick}>Log Out</FakeLink>
       </Container>
-    </React.Fragment>
+    </>
   );
 };
 

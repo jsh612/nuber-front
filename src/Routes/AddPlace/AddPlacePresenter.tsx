@@ -50,7 +50,7 @@ const AddPlacePresenter: React.FC<IProps> = ({
     return onSubmit();
   };
   return (
-    <React.Fragment>
+    <>
       <Helmet>
         <title>Add Place | Nuber</title>
       </Helmet>
@@ -82,7 +82,7 @@ const AddPlacePresenter: React.FC<IProps> = ({
           )}
         </Form>
       </Container>
-    </React.Fragment>
+    </>
   );
 };
 
