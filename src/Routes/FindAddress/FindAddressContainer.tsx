@@ -10,11 +10,11 @@ interface ICoords {
 }
 
 interface IProps extends RouteComponentProps {
-  google: any;
+  google: typeof google;
 }
 
 const FindAddressContainer: React.FC<IProps> = ({ google }) => {
-  const mapRef = useRef();
+  const mapRef = useRef<HTMLElement>();
   let map: google.maps.Map;
   const [coords, setCoords] = useState<ICoords>({ lat: 0, lng: 0 });
   const addressInput = useInput("");
@@ -41,9 +41,11 @@ const FindAddressContainer: React.FC<IProps> = ({ google }) => {
   };
 
   const loadMap = (lat: number, lng: number) => {
+    // 구글맵을 로드 함수
     const maps = google.maps;
     const mapNode = mapRef.current; // 어떤 엘리먼트가 구글맵을 갖게 될지, 해당 엘리먼트 결정
     const mapConfig: google.maps.MapOptions = {
+      // 구글맵 옵션 설정
       center: {
         lat,
         lng
@@ -53,7 +55,7 @@ const FindAddressContainer: React.FC<IProps> = ({ google }) => {
     };
     // maps.Map(엘리먼트, 구글맵 옵션)
     //  - Creates a new map inside of the given HTML container, which is typically a DIV element.
-    map = new maps.Map(mapNode, mapConfig); // 입력한 엘리먼트에 구글 맵 생성
+    map = new maps.Map(mapNode!, mapConfig); // 입력한 엘리먼트에 구글 맵 생성
     // dragend 이벤트 : 드래그를 끝냈을 때 발생한다.
     map.addListener("dragend", handleDragEnd);
   };
