@@ -26,22 +26,26 @@ const HomeContainer: React.FC<IProps> = () => {
   };
 
   // 컴포넌트 시작될때 실행
-  const handleGeoSucces: PositionCallback = position => {
+  const handleGeoCurrentSucces: PositionCallback = position => {
     const {
       coords: { latitude, longitude }
     } = position;
     loadMap(latitude, longitude);
   };
 
-  const handleGeoError = () => {
+  const handleGeoCurrentError = () => {
     console.log("No location");
   };
   // ======================
 
   // 맵 로드 이후 실행
   const handleGeoWatchSuccess = (position: Position) => {
-    console.log("WatchSuccess", position);
-    return;
+    const {
+      coords: { latitude: lat, longitude: lng }
+    } = position;
+    // position의 변경에 따라 마커 위치와 맵의 중앙이 변화한다.
+    userMarker?.setPosition({ lat, lng });
+    itMap?.panTo({ lat, lng });
   };
   const handleGeoWatchError = () => {
     console.log("Error watching you");
@@ -85,8 +89,18 @@ const HomeContainer: React.FC<IProps> = () => {
 
     marker.setMap(map); //setMap: 마커를 맵위에 표시함
     setUserMarker(marker);
+  };
 
-    // 3.navigator 관련
+  useEffect(() => {
+    // 컴포넌트 렌더시 지도를 보여주기 위함
+    navigator.geolocation.getCurrentPosition(
+      handleGeoCurrentSucces,
+      handleGeoCurrentError
+    );
+  }, []);
+
+  useEffect(() => {
+    // 유저 디비아시의 위치값 추적 시키기
     const watchOptions: PositionOptions = {
       enableHighAccuracy: true
     };
@@ -95,12 +109,7 @@ const HomeContainer: React.FC<IProps> = () => {
       handleGeoWatchError,
       watchOptions
     );
-  };
-
-  useEffect(() => {
-    // 컴포넌트 렌더시 지도를 보여주기 위함
-    navigator.geolocation.watchPosition(handleGeoSucces, handleGeoError);
-  }, []);
+  }, [itMap, userMarker]);
   return (
     <HomePresenter
       isMenuOpen={isMenuOpen}
