@@ -217,9 +217,7 @@ const HomeContainer: React.FC<IProps> = () => {
 
   const priceMaker = () => {
     if (distance) {
-      const price = Number(parseFloat(distance.replace(",", "")) * 3).toFixed(
-        2
-      );
+      const price = Number(parseFloat(distance) * 3).toFixed(2);
       setPrice(price);
     }
   };
