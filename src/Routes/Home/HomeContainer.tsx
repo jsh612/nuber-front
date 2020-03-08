@@ -1,12 +1,17 @@
 import React, { useState, useEffect, useRef } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import HomePresenter from "./HomePresenter";
-import { useQuery } from "@apollo/react-hooks";
+import { useQuery, useMutation } from "@apollo/react-hooks";
 import { USER_PROFILE } from "../../sharedQueries.queries";
-import { userProfile } from "../../types/api";
+import {
+  userProfile,
+  reportMovement,
+  reportMovementVariables
+} from "../../types/api";
 import useInput from "../../hooks/useInput";
 import { geoCode } from "../../mapHelpers";
 import { toast } from "react-toastify";
+import { REPORT_LOCATION } from "./Home.queries";
 
 interface IProps extends RouteComponentProps {
   google: typeof google;
@@ -19,18 +24,29 @@ interface ICoords {
 const HomeContainer: React.FC<IProps> = () => {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const { loading } = useQuery<userProfile>(USER_PROFILE);
+
+  // 구글 맵에 필요한것들
   const mapRef = useRef<HTMLElement>();
   const [coords, setCoords] = useState<ICoords>({ lat: 0, lng: 0 });
   const [toCoords, setToCoords] = useState<ICoords>({ lat: 0, lng: 0 });
   const toAddressInput = useInput("");
   const [distance, setDistance] = useState<string>("");
   const [duration, setDuration] = useState<string>("");
-  const [price, setPrice] = useState<number>(0);
-  // 구긂맵 렌더와 마커 표시 관련
+  const [price, setPrice] = useState<string>("");
+
+  // 구글맵 렌더와 마커 표시 관련
   const [itMap, setItMap] = useState<google.maps.Map>();
   const [userMarker, setUserMarker] = useState<google.maps.Marker>();
   const [toMarker, setToMarker] = useState<google.maps.Marker>();
   const [directions, setDirections] = useState();
+
+  // report Movement
+  const [reporMovetMutation] = useMutation<
+    reportMovement,
+    reportMovementVariables
+  >(REPORT_LOCATION, {
+    onCompleted: data => console.log("뮤테이션결과", data)
+  });
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -51,13 +67,21 @@ const HomeContainer: React.FC<IProps> = () => {
   // ======================
 
   // 맵 로드 이후 실행
-  const handleGeoWatchSuccess = (position: Position) => {
+  const handleGeoWatchSuccess = async (position: Position) => {
     const {
       coords: { latitude: lat, longitude: lng }
     } = position;
+    setCoords({ lat, lng });
     // position의 변경에 따라 마커 위치와 맵의 중앙이 변화한다.
     userMarker?.setPosition({ lat, lng });
     itMap?.panTo({ lat, lng });
+
+    await reporMovetMutation({
+      variables: {
+        lat: parseFloat(lat.toFixed(10)),
+        lng: parseFloat(lng.toFixed(10))
+      }
+    });
   };
   const handleGeoWatchError = () => {
     console.log("Error watching you");
@@ -191,6 +215,15 @@ const HomeContainer: React.FC<IProps> = () => {
     );
   };
 
+  const priceMaker = () => {
+    if (distance) {
+      const price = Number(parseFloat(distance.replace(",", "")) * 3).toFixed(
+        2
+      );
+      setPrice(price);
+    }
+  };
+
   useEffect(() => {
     // 컴포넌트 렌더시 지도를 보여주기 위함
     navigator.geolocation.getCurrentPosition(
@@ -211,6 +244,10 @@ const HomeContainer: React.FC<IProps> = () => {
     );
   }, [itMap, userMarker]);
 
+  useEffect(() => {
+    priceMaker();
+  }, [distance]);
+
   return (
     <HomePresenter
       isMenuOpen={isMenuOpen}
@@ -219,6 +256,7 @@ const HomeContainer: React.FC<IProps> = () => {
       mapRef={mapRef}
       toAddress={toAddressInput}
       onAddressSubmit={onAddressSubmit}
+      price={price}
     />
   );
 };

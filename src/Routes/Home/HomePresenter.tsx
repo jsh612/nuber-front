@@ -42,6 +42,10 @@ const ExtendedButton = styled(Button)`
   width: 80%;
 `;
 
+const RequestButton = styled(ExtendedButton)`
+  bottom: 250px;
+`;
+
 interface IAddresInput {
   value: string | null;
   onChange: React.ChangeEventHandler;
@@ -54,6 +58,7 @@ interface IProps {
   mapRef: any;
   toAddress: IAddresInput;
   onAddressSubmit: () => void;
+  price?: string;
 }
 
 const HomePresenter: React.FC<IProps> = ({
@@ -62,7 +67,8 @@ const HomePresenter: React.FC<IProps> = ({
   loading,
   mapRef,
   toAddress,
-  onAddressSubmit
+  onAddressSubmit,
+  price
 }) => {
   return (
     <Container>
@@ -88,10 +94,17 @@ const HomePresenter: React.FC<IProps> = ({
           value={toAddress.value ? toAddress.value : ""}
           onBlur={() => null}
         />
+        {price && (
+          <RequestButton
+            onClick={onAddressSubmit}
+            disabled={toAddress.value === ""}
+            value={`Request Ride ($${price})`}
+          />
+        )}
         <ExtendedButton
           onClick={onAddressSubmit}
           disabled={toAddress.value === ""}
-          value={"Pick Address"}
+          value={price ? "Change address" : "Pick Address"}
         />
         <Map ref={mapRef} />
       </Sidebar>
