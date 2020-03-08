@@ -20,14 +20,14 @@ const FindAddressContainer: React.FC<IProps> = ({ google, history }) => {
   const [coords, setCoords] = useState<ICoords>({ lat: 0, lng: 0 });
   const addressInput = useInput("");
 
-  const hadleGeoSucces = (position: Position) => {
+  const hadleGeoSucces: PositionCallback = position => {
     const {
       coords: { latitude, longitude }
     } = position;
     loadMap(latitude, longitude);
   };
 
-  const handleGeoError = () => {
+  const handleGeoError: PositionErrorCallback = () => {
     console.log("No location");
   };
 
