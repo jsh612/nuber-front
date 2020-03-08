@@ -4,6 +4,8 @@ import HomePresenter from "./HomePresenter";
 import { useQuery } from "@apollo/react-hooks";
 import { USER_PROFILE } from "../../sharedQueries.queries";
 import { userProfile } from "../../types/api";
+import useInput from "../../hooks/useInput";
+import { geoCode } from "../../mapHelpers";
 
 interface IProps extends RouteComponentProps {
   google: typeof google;
@@ -18,8 +20,11 @@ const HomeContainer: React.FC<IProps> = () => {
   const { loading } = useQuery<userProfile>(USER_PROFILE);
   const mapRef = useRef<HTMLElement>();
   const [coords, setCoords] = useState<ICoords>({ lat: 0, lng: 0 });
+  const [toCoords, setToCoords] = useState<ICoords>({ lat: 0, lng: 0 });
+  const toAddressInput = useInput("");
   const [itMap, setItMap] = useState<google.maps.Map>();
   const [userMarker, setUserMarker] = useState<google.maps.Marker>();
+  const [toMarker, setToMarker] = useState<google.maps.Marker>();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -65,7 +70,7 @@ const HomeContainer: React.FC<IProps> = () => {
         lng
       },
       disableDefaultUI: false,
-      zoom: 11,
+      zoom: 13,
       minZoom: 8
     };
     // maps.Map(엘리먼트, 구글맵 옵션)
@@ -99,6 +104,36 @@ const HomeContainer: React.FC<IProps> = () => {
     );
   }, []);
 
+  const onAddressSubmit = async () => {
+    // 주소입력란에서 입력받은 주소를 이용하여 새로운 마커를 표시한다.
+    const maps = google.maps;
+    const result = await geoCode(
+      toAddressInput.value ? toAddressInput.value : ""
+    );
+    if (result) {
+      const { lat, lng, formatted_address: formatedAddress } = result;
+      setToCoords({ lat, lng });
+      toAddressInput.setValue(formatedAddress);
+
+      if (toMarker) {
+        // 기존에 체크한 목적지 마커가 있다면 없애기
+        toMarker.setMap(null);
+      }
+      const toMarkerOptions: google.maps.MarkerOptions = {
+        // icon 설정 안할시 기본 아이콘으로 표시
+        position: {
+          lat,
+          lng
+        }
+      };
+      const toNewMarker = new maps.Marker(toMarkerOptions);
+      setToMarker(toNewMarker);
+      if (itMap) {
+        toNewMarker.setMap(itMap);
+      }
+    }
+  };
+
   useEffect(() => {
     // 유저 디비아시의 위치값 추적 시키기
     const watchOptions: PositionOptions = {
@@ -116,6 +151,8 @@ const HomeContainer: React.FC<IProps> = () => {
       toggleMenu={toggleMenu}
       loading={loading}
       mapRef={mapRef}
+      toAddress={toAddressInput}
+      onAddressSubmit={onAddressSubmit}
     />
   );
 };
