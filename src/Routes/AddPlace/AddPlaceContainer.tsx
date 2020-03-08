@@ -7,12 +7,27 @@ import { addPlace, addPlaceVariables } from "../../types/api";
 import { ADD_PLACE } from "./AddPlace.queries";
 import { GET_PLACES } from "../../sharedQueries.queries";
 import { toast } from "react-toastify";
+import routes from "../routes";
 
-const AddPlaceContainer: React.FC<RouteComponentProps> = ({ history }) => {
-  const addressInput = useInput("");
+interface IState {
+  lng: number;
+  lat: number;
+  address: string;
+}
+
+const AddPlaceContainer: React.FC<RouteComponentProps<any, any, IState>> = ({
+  history,
+  location
+}) => {
+  const {
+    state: { lat: orginLat = 0, lng: orginLng = 0, address = "" } = {}
+  } = location;
+
+  const addressInput = useInput(address);
   const placeNameInput = useInput("");
-  const [lat, setLat] = useState(0);
-  const [lng, setLng] = useState(0);
+
+  const [lat, setLat] = useState(orginLat);
+  const [lng, setLng] = useState(orginLng);
 
   const [addPlaceMutation, { loading }] = useMutation<
     addPlace,
@@ -31,8 +46,8 @@ const AddPlaceContainer: React.FC<RouteComponentProps> = ({ history }) => {
       if (AddPlace.ok) {
         toast.success("Place added!");
         setTimeout(() => {
-          history.push("/places");
-        }, 2000);
+          history.push(routes.PLACES);
+        }, 1000);
       } else {
         toast.error(AddPlace.error);
       }

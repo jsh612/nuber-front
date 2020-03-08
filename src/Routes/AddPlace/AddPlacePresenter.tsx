@@ -45,10 +45,6 @@ const AddPlacePresenter: React.FC<IProps> = ({
   onSubmit,
   pickedAddress
 }) => {
-  const submitFn: React.FormEventHandler = e => {
-    e.preventDefault();
-    return onSubmit();
-  };
   return (
     <>
       <Helmet>
@@ -56,7 +52,7 @@ const AddPlacePresenter: React.FC<IProps> = ({
       </Helmet>
       <Header title={"Add Place"} backTo={"/"} />
       <Container>
-        <Form submitFn={submitFn}>
+        <Form submitFn={onSubmit}>
           <ExtendedInput
             placeholder={"장소 이름"}
             type={"text"}

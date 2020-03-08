@@ -3,6 +3,7 @@ import { RouteComponentProps } from "react-router-dom";
 import FindAddressPresenter from "./FindAddressPresenter";
 import useInput from "../../hooks/useInput";
 import { reverseGeoCode, geoCode } from "../../mapHelpers";
+import routes from "../routes";
 
 interface ICoords {
   lat: number;
@@ -13,7 +14,7 @@ interface IProps extends RouteComponentProps {
   google: typeof google;
 }
 
-const FindAddressContainer: React.FC<IProps> = ({ google }) => {
+const FindAddressContainer: React.FC<IProps> = ({ google, history }) => {
   const mapRef = useRef<HTMLElement>();
   const [itMap, setItMap] = useState<google.maps.Map>();
   const [coords, setCoords] = useState<ICoords>({ lat: 0, lng: 0 });
@@ -37,6 +38,7 @@ const FindAddressContainer: React.FC<IProps> = ({ google }) => {
       const lng = newCenter.lng();
       setCoords({ lat, lng });
       reverseGeoCodeAddress(lat, lng);
+      console.log("드레그이벤트 콜백");
     }
   };
 
@@ -84,8 +86,20 @@ const FindAddressContainer: React.FC<IProps> = ({ google }) => {
     }
   };
 
+  const onPickPlace = () => {
+    // 선택한 위치값과 함께 지정된 경로로 이동
+    const state = { ...coords, address: addressInput.value };
+    history.push(routes.ADD_PLACE, state);
+    console.log("onPick state", state);
+  };
+
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(hadleGeoSucces, handleGeoError);
+    if (itMap) {
+      //  clean-up (componentWillUnmount)
+      // deps 가 비어있는 경우에는 컴포넌트가 사라질 때 cleanup 함수가 호출
+      return () => google.maps.event.clearListeners(itMap, "dragend");
+    }
   }, []);
 
   useEffect(() => {
@@ -94,16 +108,16 @@ const FindAddressContainer: React.FC<IProps> = ({ google }) => {
     // 따라서 useEfect를 통해 itMap의 값이 생겼을 때 addListener 등록
     if (itMap) {
       // dragend 이벤트 : 드래그를 끝냈을 때 발생한다.
-      const mapEvent = itMap.addListener("dragend", handleDragEnd);
-      // useEffect 모든 렌더링 이후 clean-up
-      return () => google.maps.event.removeListener(mapEvent);
+      google.maps.event.addListener(itMap, "dragend", handleDragEnd);
     }
   }, [itMap]);
+
   return (
     <FindAddressPresenter
       mapRef={mapRef}
       address={addressInput}
       onInputBlur={onInputBlur}
+      onPickPlace={onPickPlace}
     />
   );
 };

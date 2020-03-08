@@ -10,9 +10,12 @@ import { VERIFY_PHONE } from "./VerifyPhone.queries";
 import { verifyPhone, verifyPhoneVariables } from "../../types/api";
 import { LOG_USER_IN } from "../../sharedQueries.local";
 
+interface IState {
+  phone: string;
+}
 // location.state의 값을 가져오기위해  RouteComponentProps 의 제너릭 자리 중
-// 세번쨰가 location 관련이므로, any값을 넣어 준다
-interface IProps extends RouteComponentProps<any, any, any> {}
+// 세번쨰가 location의 state와 관련된 타입
+interface IProps extends RouteComponentProps<any, any, IState> {}
 
 const VerifyPhoneContainer: React.FC<IProps> = ({ history, location }) => {
   const keyInput = useInput("");
