@@ -26,7 +26,7 @@ const HomeContainer: React.FC<IProps> = () => {
   const { loading } = useQuery<userProfile>(USER_PROFILE);
 
   // 구글 맵에 필요한것들
-  const mapRef = useRef<HTMLElement>();
+  const mapRef = useRef<HTMLDivElement>(null);
   const [coords, setCoords] = useState<ICoords>({ lat: 0, lng: 0 });
   const [toCoords, setToCoords] = useState<ICoords>({ lat: 0, lng: 0 });
   const toAddressInput = useInput("");

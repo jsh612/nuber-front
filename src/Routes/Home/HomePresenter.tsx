@@ -55,7 +55,7 @@ interface IProps {
   isMenuOpen: boolean;
   toggleMenu: () => void;
   loading: boolean;
-  mapRef: any;
+  mapRef: React.RefObject<HTMLDivElement>;
   toAddress: IAddresInput;
   onAddressSubmit: () => void;
   price?: string;
