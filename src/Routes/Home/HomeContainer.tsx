@@ -7,12 +7,18 @@ import {
   userProfile,
   reportMovement,
   reportMovementVariables,
-  getNearbyDrivers
+  getNearbyDrivers,
+  requestRide,
+  requestRideVariables
 } from "../../types/api";
 import useInput from "../../hooks/useInput";
-import { geoCode } from "../../mapHelpers";
+import { geoCode, reverseGeoCode } from "../../mapHelpers";
 import { toast } from "react-toastify";
-import { REPORT_LOCATION, GET_NEARBY_DRIVERS } from "./Home.queries";
+import {
+  REPORT_LOCATION,
+  GET_NEARBY_DRIVERS,
+  REQUEST_RIDE
+} from "./Home.queries";
 
 interface IProps extends RouteComponentProps {
   google: typeof google;
@@ -31,6 +37,7 @@ const HomeContainer: React.FC<IProps> = () => {
   // 현재 위치 관련
   const [coords, setCoords] = useState<ICoords>({ lat: 0, lng: 0 });
   const [userMarker, setUserMarker] = useState<google.maps.Marker>();
+  const [fromAddress, setFromAddress] = useState<string>("");
 
   // 목적지 관련
   const [toCoords, setToCoords] = useState<ICoords>({ lat: 0, lng: 0 });
@@ -40,7 +47,7 @@ const HomeContainer: React.FC<IProps> = () => {
   // 기타 정보
   const [distance, setDistance] = useState<string>("");
   const [duration, setDuration] = useState<string>("");
-  const [price, setPrice] = useState<string>("");
+  const [price, setPrice] = useState<number>(0);
   const [directions, setDirections] = useState();
 
   // 운전자 정보
@@ -98,7 +105,7 @@ const HomeContainer: React.FC<IProps> = () => {
                 markerOptions
               );
               driverMarkersList.push(newMarker);
-              console.log("driverMarkersList", driverMarkersList);
+              // console.log("driverMarkersList", driverMarkersList);
               newMarker.set("ID", driver.id);
               newMarker.set("NAME", driver.fullName);
               newMarker.setMap(itMap ? itMap : null);
@@ -121,6 +128,25 @@ const HomeContainer: React.FC<IProps> = () => {
     fetchPolicy: "cache-and-network"
   });
 
+  // requestRide mutation
+  const [requestRideMutation] = useMutation<requestRide, requestRideVariables>(
+    REQUEST_RIDE,
+    {
+      variables: {
+        distance: distance,
+        dropOffAddress: toAddressInput.value ? toAddressInput.value : "",
+        dropOffLat: toCoords.lat,
+        dropOffLng: toCoords.lng,
+        duration: duration,
+        pickUpAddress: fromAddress,
+        pickUpLat: coords.lat,
+        pickUpLng: coords.lng,
+        price: price
+      },
+      onCompleted: () => toast.success("request ride 성공")
+    }
+  );
+
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
@@ -132,6 +158,7 @@ const HomeContainer: React.FC<IProps> = () => {
     } = position;
     setCoords({ lat: latitude, lng: longitude });
     loadMap(latitude, longitude);
+    getFromAdress(latitude, longitude);
   };
 
   const handleGeoCurrentError = () => {
@@ -290,8 +317,15 @@ const HomeContainer: React.FC<IProps> = () => {
 
   const priceMaker = () => {
     if (distance) {
-      const price = Number(parseFloat(distance) * 3).toFixed(2);
+      const price = Number(Number(parseFloat(distance) * 3).toFixed(2));
       setPrice(price);
+    }
+  };
+
+  const getFromAdress = async (lat: number, lng: number) => {
+    const address = await reverseGeoCode(lat, lng);
+    if (address) {
+      setFromAddress(address);
     }
   };
 
@@ -329,6 +363,7 @@ const HomeContainer: React.FC<IProps> = () => {
       onAddressSubmit={onAddressSubmit}
       price={price}
       data={data}
+      requestRideFn={requestRideMutation}
     />
   );
 };

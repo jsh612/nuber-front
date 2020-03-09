@@ -6,7 +6,12 @@ import Helmet from "react-helmet";
 import Menu from "../../Components/Menu";
 import AddressBar from "../../Components/AddressBar";
 import Button from "../../Components/Button";
-import { userProfile } from "../../types/api";
+import {
+  userProfile,
+  requestRide,
+  requestRideVariables
+} from "../../types/api";
+import { MutationTuple } from "@apollo/react-hooks";
 
 const Container = styled.div``;
 
@@ -59,8 +64,9 @@ interface IProps {
   mapRef: React.RefObject<HTMLDivElement>;
   toAddress: IAddresInput;
   onAddressSubmit: () => void;
-  price?: string;
+  price?: number;
   data?: userProfile;
+  requestRideFn: MutationTuple<requestRide, requestRideVariables>[0];
 }
 
 const HomePresenter: React.FC<IProps> = ({
@@ -71,7 +77,8 @@ const HomePresenter: React.FC<IProps> = ({
   toAddress,
   onAddressSubmit,
   price,
-  data: { GetMyProfile: { user = null } = {} } = {}
+  data: { GetMyProfile: { user = null } = {} } = {},
+  requestRideFn
 }) => {
   return (
     <Container>
@@ -108,7 +115,7 @@ const HomePresenter: React.FC<IProps> = ({
         )}
         {price && (
           <RequestButton
-            onClick={onAddressSubmit}
+            onClick={requestRideFn}
             disabled={toAddress.value === ""}
             value={`Request Ride ($${price})`}
           />
