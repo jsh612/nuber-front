@@ -6,12 +6,13 @@ import { USER_PROFILE } from "../../sharedQueries.queries";
 import {
   userProfile,
   reportMovement,
-  reportMovementVariables
+  reportMovementVariables,
+  getNearbyDrivers
 } from "../../types/api";
 import useInput from "../../hooks/useInput";
 import { geoCode } from "../../mapHelpers";
 import { toast } from "react-toastify";
-import { REPORT_LOCATION } from "./Home.queries";
+import { REPORT_LOCATION, GET_NEARBY_DRIVERS } from "./Home.queries";
 
 interface IProps extends RouteComponentProps {
   google: typeof google;
@@ -23,7 +24,6 @@ interface ICoords {
 
 const HomeContainer: React.FC<IProps> = () => {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
-  const { loading } = useQuery<userProfile>(USER_PROFILE);
 
   const mapRef = useRef<HTMLDivElement>(null);
   const [itMap, setItMap] = useState<google.maps.Map>();
@@ -50,6 +50,12 @@ const HomeContainer: React.FC<IProps> = () => {
   >(REPORT_LOCATION, {
     onCompleted: data => console.log("뮤테이션결과", data)
   });
+
+  // query user profile
+  const { data, loading } = useQuery<userProfile>(USER_PROFILE);
+
+  // query nearby drivers
+  useQuery<getNearbyDrivers>(GET_NEARBY_DRIVERS);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -258,6 +264,7 @@ const HomeContainer: React.FC<IProps> = () => {
       toAddress={toAddressInput}
       onAddressSubmit={onAddressSubmit}
       price={price}
+      data={data}
     />
   );
 };

@@ -6,6 +6,7 @@ import Helmet from "react-helmet";
 import Menu from "../../Components/Menu";
 import AddressBar from "../../Components/AddressBar";
 import Button from "../../Components/Button";
+import { userProfile } from "../../types/api";
 
 const Container = styled.div``;
 
@@ -59,6 +60,7 @@ interface IProps {
   toAddress: IAddresInput;
   onAddressSubmit: () => void;
   price?: string;
+  data?: userProfile;
 }
 
 const HomePresenter: React.FC<IProps> = ({
@@ -68,7 +70,8 @@ const HomePresenter: React.FC<IProps> = ({
   mapRef,
   toAddress,
   onAddressSubmit,
-  price
+  price,
+  data: { GetMyProfile: { user = null } = {} } = {}
 }) => {
   return (
     <Container>
@@ -88,12 +91,21 @@ const HomePresenter: React.FC<IProps> = ({
         }}
       >
         {!loading && <MenuButton onClick={toggleMenu}>|||</MenuButton>}
-        <AddressBar
-          name={"toAddress"}
-          onChange={toAddress.onChange}
-          value={toAddress.value ? toAddress.value : ""}
-          onBlur={() => null}
-        />
+        {user && !user.isDriving && (
+          <React.Fragment>
+            <AddressBar
+              name={"toAddress"}
+              onChange={toAddress.onChange}
+              value={toAddress.value ? toAddress.value : ""}
+              onBlur={() => null}
+            />
+            <ExtendedButton
+              onClick={onAddressSubmit}
+              disabled={toAddress.value === ""}
+              value={price ? "Change address" : "Pick Address"}
+            />
+          </React.Fragment>
+        )}
         {price && (
           <RequestButton
             onClick={onAddressSubmit}
