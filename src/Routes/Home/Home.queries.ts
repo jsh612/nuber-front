@@ -15,7 +15,8 @@ export const GET_NEARBY_DRIVERS = gql`
       drivers {
         id
         lastLat
-        lastLat
+        lastLng
+        fullName
       }
     }
   }

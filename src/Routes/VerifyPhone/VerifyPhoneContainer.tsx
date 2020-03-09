@@ -38,6 +38,7 @@ const VerifyPhoneContainer: React.FC<IProps> = ({ history, location }) => {
     },
     onCompleted: async data => {
       const { CompletePhoneVerification } = data;
+      console.log("data::::", data);
       if (CompletePhoneVerification.ok) {
         if (CompletePhoneVerification.token) {
           try {

@@ -43,6 +43,9 @@ const HomeContainer: React.FC<IProps> = () => {
   const [price, setPrice] = useState<string>("");
   const [directions, setDirections] = useState();
 
+  // 운전자 정보
+  const driverMarkersList: google.maps.Marker[] = [];
+
   // report Movement
   const [reportMoveMutation] = useMutation<
     reportMovement,
@@ -55,7 +58,68 @@ const HomeContainer: React.FC<IProps> = () => {
   const { data, loading } = useQuery<userProfile>(USER_PROFILE);
 
   // query nearby drivers
-  useQuery<getNearbyDrivers>(GET_NEARBY_DRIVERS);
+  const handleNearbyDrivers = (data: getNearbyDrivers) => {
+    // 드라이버들의 정보를 받아 마커 표시
+    if (data.GetNearbyDrivers) {
+      const {
+        GetNearbyDrivers: { drivers, ok }
+      } = data;
+      if (ok && drivers) {
+        for (const driver of drivers) {
+          if (driver && driver.lastLat && driver.lastLng) {
+            // 해당 드라이버 마커 목록에 서버에서 받아온 driver가 있는지 확인
+            // (같은 드라이버가 여러가 마커로 표시 되는 것을 방지)
+            const exisitingDriver:
+              | google.maps.Marker
+              | undefined = driverMarkersList.find(
+              (driverMarker: google.maps.Marker) => {
+                return driverMarker.get("ID") === driver.id;
+              }
+            );
+            if (exisitingDriver) {
+              // 이미 드라이버마커 목로겡 있는 드라이버의 경우 위치값만 변경
+              exisitingDriver.setPosition({
+                lat: driver.lastLat,
+                lng: driver.lastLng
+              });
+              exisitingDriver.setMap(itMap ? itMap : null);
+            } else {
+              const markerOptions: google.maps.MarkerOptions = {
+                icon: {
+                  path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
+                  scale: 5
+                },
+                position: {
+                  lat: driver.lastLat,
+                  lng: driver.lastLng
+                }
+              };
+              const newMarker: google.maps.Marker = new google.maps.Marker(
+                markerOptions
+              );
+              driverMarkersList.push(newMarker);
+              console.log("driverMarkersList", driverMarkersList);
+              newMarker.set("ID", driver.id);
+              newMarker.set("NAME", driver.fullName);
+              newMarker.setMap(itMap ? itMap : null);
+            }
+          }
+        }
+      }
+    }
+  };
+  useQuery<getNearbyDrivers>(GET_NEARBY_DRIVERS, {
+    pollInterval: 1000,
+    skip:
+      // 로그인된 유저가 운전중일 경우에는 스킵(즉, 가까운거리의 운전자 표시 안함.)
+      (data &&
+        data.GetMyProfile &&
+        data.GetMyProfile.user &&
+        data.GetMyProfile.user.isDriving) ||
+      false,
+    onCompleted: handleNearbyDrivers,
+    fetchPolicy: "cache-and-network"
+  });
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);

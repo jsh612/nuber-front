@@ -130,6 +130,8 @@ export interface getNearbyDrivers_GetNearbyDrivers_drivers {
   __typename: "User";
   id: number;
   lastLat: number | null;
+  lastLng: number | null;
+  fullName: string | null;
 }
 
 export interface getNearbyDrivers_GetNearbyDrivers {
