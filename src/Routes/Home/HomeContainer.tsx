@@ -25,23 +25,26 @@ const HomeContainer: React.FC<IProps> = () => {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const { loading } = useQuery<userProfile>(USER_PROFILE);
 
-  // 구글 맵에 필요한것들
   const mapRef = useRef<HTMLDivElement>(null);
+  const [itMap, setItMap] = useState<google.maps.Map>();
+
+  // 현재 위치 관련
   const [coords, setCoords] = useState<ICoords>({ lat: 0, lng: 0 });
+  const [userMarker, setUserMarker] = useState<google.maps.Marker>();
+
+  // 목적지 관련
   const [toCoords, setToCoords] = useState<ICoords>({ lat: 0, lng: 0 });
   const toAddressInput = useInput("");
+  const [toMarker, setToMarker] = useState<google.maps.Marker>();
+
+  // 기타 정보
   const [distance, setDistance] = useState<string>("");
   const [duration, setDuration] = useState<string>("");
   const [price, setPrice] = useState<string>("");
-
-  // 구글맵 렌더와 마커 표시 관련
-  const [itMap, setItMap] = useState<google.maps.Map>();
-  const [userMarker, setUserMarker] = useState<google.maps.Marker>();
-  const [toMarker, setToMarker] = useState<google.maps.Marker>();
   const [directions, setDirections] = useState();
 
   // report Movement
-  const [reporMovetMutation] = useMutation<
+  const [reportMoveMutation] = useMutation<
     reportMovement,
     reportMovementVariables
   >(REPORT_LOCATION, {
@@ -76,7 +79,7 @@ const HomeContainer: React.FC<IProps> = () => {
     userMarker?.setPosition({ lat, lng });
     itMap?.panTo({ lat, lng });
 
-    await reporMovetMutation({
+    await reportMoveMutation({
       variables: {
         lat: parseFloat(lat.toFixed(10)),
         lng: parseFloat(lng.toFixed(10))
