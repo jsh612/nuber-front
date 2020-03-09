@@ -9,7 +9,10 @@ import {
   reportMovementVariables,
   getNearbyDrivers,
   requestRide,
-  requestRideVariables
+  requestRideVariables,
+  updateRideStatus,
+  updateRideStatusVariables,
+  getRides
 } from "../../types/api";
 import useInput from "../../hooks/useInput";
 import { geoCode, reverseGeoCode } from "../../mapHelpers";
@@ -17,7 +20,9 @@ import { toast } from "react-toastify";
 import {
   REPORT_LOCATION,
   GET_NEARBY_DRIVERS,
-  REQUEST_RIDE
+  REQUEST_RIDE,
+  UPDATE_RIDE_STATUS,
+  GET_NEARBY_RIDE
 } from "./Home.queries";
 
 interface IProps extends RouteComponentProps {
@@ -49,6 +54,7 @@ const HomeContainer: React.FC<IProps> = () => {
   const [duration, setDuration] = useState<string>("");
   const [price, setPrice] = useState<number>(0);
   const [directions, setDirections] = useState();
+  const [isDriving, setIsDriving] = useState<boolean>(false);
 
   // 운전자 정보
   const driverMarkersList: google.maps.Marker[] = [];
@@ -62,7 +68,18 @@ const HomeContainer: React.FC<IProps> = () => {
   });
 
   // query user profile
-  const { data, loading } = useQuery<userProfile>(USER_PROFILE);
+  const handleProfileQuery = (data: userProfile) => {
+    const { GetMyProfile } = data;
+    if (GetMyProfile.user) {
+      const {
+        user: { isDriving }
+      } = GetMyProfile;
+      setIsDriving(isDriving);
+    }
+  };
+  const { data, loading } = useQuery<userProfile>(USER_PROFILE, {
+    onCompleted: handleProfileQuery
+  });
 
   // query nearby drivers
   const handleNearbyDrivers = (data: getNearbyDrivers) => {
@@ -116,19 +133,27 @@ const HomeContainer: React.FC<IProps> = () => {
     }
   };
   useQuery<getNearbyDrivers>(GET_NEARBY_DRIVERS, {
-    pollInterval: 1000,
-    skip:
-      // 로그인된 유저가 운전중일 경우에는 스킵(즉, 가까운거리의 운전자 표시 안함.)
-      (data &&
-        data.GetMyProfile &&
-        data.GetMyProfile.user &&
-        data.GetMyProfile.user.isDriving) ||
-      false,
+    // pollInterval: 1000,
+    // 로그인된 유저가 운전중일 경우에는 스킵(즉, 가까운거리의 운전자 표시 안함.)
+    skip: isDriving,
     onCompleted: handleNearbyDrivers,
     fetchPolicy: "cache-and-network"
   });
 
+  // query nearby rides
+  const { data: nearbyRide } = useQuery<getRides>(GET_NEARBY_RIDE, {
+    skip: !isDriving
+  });
+
   // requestRide mutation
+  const handleRideRequest = (data: requestRide) => {
+    const { RequestRide } = data;
+    if (RequestRide.ok) {
+      toast.success("Drive requested, finding a driver");
+    } else {
+      toast.error(RequestRide.error);
+    }
+  };
   const [requestRideMutation] = useMutation<requestRide, requestRideVariables>(
     REQUEST_RIDE,
     {
@@ -143,9 +168,15 @@ const HomeContainer: React.FC<IProps> = () => {
         pickUpLng: coords.lng,
         price: price
       },
-      onCompleted: () => toast.success("request ride 성공")
+      onCompleted: handleRideRequest
     }
   );
+
+  // updateRideStatus mutation
+  const [updateRideStatusMutation] = useMutation<
+    updateRideStatus,
+    updateRideStatusVariables
+  >(UPDATE_RIDE_STATUS);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -364,6 +395,8 @@ const HomeContainer: React.FC<IProps> = () => {
       price={price}
       data={data}
       requestRideFn={requestRideMutation}
+      nearbyRide={nearbyRide}
+      acceptRideFn={updateRideStatusMutation}
     />
   );
 };

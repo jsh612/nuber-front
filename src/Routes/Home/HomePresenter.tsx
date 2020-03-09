@@ -9,9 +9,14 @@ import Button from "../../Components/Button";
 import {
   userProfile,
   requestRide,
-  requestRideVariables
+  requestRideVariables,
+  getRides,
+  getNearbyDrivers,
+  updateRideStatus,
+  updateRideStatusVariables
 } from "../../types/api";
 import { MutationTuple } from "@apollo/react-hooks";
+import RidePopUp from "../../Components/RidePopUp";
 
 const Container = styled.div``;
 
@@ -67,6 +72,8 @@ interface IProps {
   price?: number;
   data?: userProfile;
   requestRideFn: MutationTuple<requestRide, requestRideVariables>[0];
+  nearbyRide?: getRides;
+  acceptRideFn: MutationTuple<updateRideStatus, updateRideStatusVariables>[0];
 }
 
 const HomePresenter: React.FC<IProps> = ({
@@ -78,7 +85,9 @@ const HomePresenter: React.FC<IProps> = ({
   onAddressSubmit,
   price,
   data: { GetMyProfile: { user = null } = {} } = {},
-  requestRideFn
+  requestRideFn,
+  nearbyRide: { GetNearbyRide: { ride = null } = {} } = {},
+  acceptRideFn
 }) => {
   return (
     <Container>
@@ -120,11 +129,25 @@ const HomePresenter: React.FC<IProps> = ({
             value={`Request Ride ($${price})`}
           />
         )}
-        <ExtendedButton
-          onClick={onAddressSubmit}
-          disabled={toAddress.value === ""}
-          value={price ? "Change address" : "Pick Address"}
-        />
+        {!ride && (
+          <ExtendedButton
+            onClick={onAddressSubmit}
+            disabled={toAddress.value === ""}
+            value={price ? "Change address" : "Pick Address"}
+          />
+        )}
+        {ride && (
+          <RidePopUp
+            id={ride.id}
+            pickUpAddress={ride.pickUpAddress}
+            dropOffAddress={ride.dropOffAddress}
+            price={ride.price}
+            distance={ride.distance}
+            passengerName={ride.passenger.fullName!}
+            passengerPhoto={ride.passenger.profilePhoto!}
+            acceptRideFn={acceptRideFn}
+          />
+        )}
         <Map ref={mapRef} />
       </Sidebar>
     </Container>
