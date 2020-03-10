@@ -82,3 +82,19 @@ export const UPDATE_RIDE_STATUS = gql`
     }
   }
 `;
+
+export const SUBSCRIBE_NEARBY_RIDES = gql`
+  subscription nearbyRides {
+    NearbyRideSubscription {
+      id
+      pickUpAddress
+      dropOffAddress
+      price
+      distance
+      passenger {
+        fullName
+        profilePhoto
+      }
+    }
+  }
+`;

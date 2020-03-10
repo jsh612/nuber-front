@@ -122,7 +122,7 @@ const HomePresenter: React.FC<IProps> = ({
             />
           </>
         )}
-        {price && (
+        {price !== 0 && (
           <RequestButton
             onClick={requestRideFn}
             disabled={toAddress.value === ""}

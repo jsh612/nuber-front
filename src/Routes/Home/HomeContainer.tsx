@@ -12,7 +12,8 @@ import {
   requestRideVariables,
   updateRideStatus,
   updateRideStatusVariables,
-  getRides
+  getRides,
+  nearbyRides
 } from "../../types/api";
 import useInput from "../../hooks/useInput";
 import { geoCode, reverseGeoCode } from "../../mapHelpers";
@@ -22,8 +23,10 @@ import {
   GET_NEARBY_DRIVERS,
   REQUEST_RIDE,
   UPDATE_RIDE_STATUS,
-  GET_NEARBY_RIDE
+  GET_NEARBY_RIDE,
+  SUBSCRIBE_NEARBY_RIDES
 } from "./Home.queries";
+import { SubscribeToMoreOptions } from "apollo-boost";
 
 interface IProps extends RouteComponentProps {
   google: typeof google;
@@ -53,7 +56,9 @@ const HomeContainer: React.FC<IProps> = () => {
   const [distance, setDistance] = useState<string>("");
   const [duration, setDuration] = useState<string>("");
   const [price, setPrice] = useState<number>(0);
-  const [directions, setDirections] = useState();
+  const [directions, setDirections] = useState<
+    google.maps.DirectionsRenderer
+  >();
   const [isDriving, setIsDriving] = useState<boolean>(false);
 
   // 운전자 마커 목록
@@ -141,9 +146,34 @@ const HomeContainer: React.FC<IProps> = () => {
   });
 
   // query nearby rides
-  const { data: nearbyRide } = useQuery<getRides>(GET_NEARBY_RIDE, {
-    skip: !isDriving
-  });
+  const { data: nearbyRide, subscribeToMore } = useQuery<getRides>(
+    GET_NEARBY_RIDE,
+    {
+      skip: !isDriving
+    }
+  );
+  const rideSubscriptionOptions: SubscribeToMoreOptions<
+    getRides,
+    any,
+    nearbyRides
+  > = {
+    document: SUBSCRIBE_NEARBY_RIDES,
+    updateQuery: (preQueryData, { subscriptionData }) => {
+      if (!subscriptionData.data) {
+        return preQueryData;
+      }
+      // getRides쿼리 데이터를 연결된 subscribe를 통해 받아온 데이터로 업데이트
+      // (기존 쿼리 데이터와 합쳐지는 subscribe의 데이터는 쿼리 데이터의 구조와 같아야 한다.)
+      // (ex/ ride: XX)
+      const newObject = Object.assign({}, preQueryData, {
+        GetNearbyRide: {
+          ...preQueryData.GetNearbyRide, // 기존 쿼리 데이터
+          ride: subscriptionData.data.NearbyRideSubscription // subscribe로 받아온 새로운 데이터
+        }
+      });
+      return newObject;
+    }
+  };
 
   // requestRide mutation
   const handleRideRequest = (data: requestRide) => {
@@ -383,6 +413,12 @@ const HomeContainer: React.FC<IProps> = () => {
   useEffect(() => {
     priceMaker();
   }, [distance]);
+
+  useEffect(() => {
+    if (isDriving) {
+      subscribeToMore(rideSubscriptionOptions);
+    }
+  }, [isDriving]);
 
   return (
     <HomePresenter
