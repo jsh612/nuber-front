@@ -399,13 +399,27 @@ const HomeContainer: React.FC<IProps> = ({ history }) => {
     }
   };
 
+  const unuseSubscribefn = isDrivingBool
+    ? subscribeToMore(rideSubscriptionOptions)
+    : () => null;
+
   useEffect(() => {
     // 컴포넌트 렌더시 지도를 보여주기 위함
     navigator.geolocation.getCurrentPosition(
       handleGeoCurrentSucces,
       handleGeoCurrentError
     );
+    console.log("지우기함수", unuseSubscribefn);
+    return unuseSubscribefn;
   }, []);
+
+  // useEffect(() => {
+  //   // componentDidMount 될때 subscription 지워주기
+  //   if (isDrivingBool) {
+  //     const unuseSubscribefn = subscribeToMore(rideSubscriptionOptions);
+  //     return () => unuseSubscribefn();
+  //   }
+  // }, [isDrivingBool]);
 
   useEffect(() => {
     // 유저 디비아시의 위치값 추적 시키기
@@ -422,14 +436,6 @@ const HomeContainer: React.FC<IProps> = ({ history }) => {
   useEffect(() => {
     priceMaker();
   }, [distance]);
-
-  useEffect(() => {
-    // componentDidMount 될때 subscription 지워주기
-    if (isDrivingBool) {
-      const unuseSubscribefn = subscribeToMore(rideSubscriptionOptions);
-      return () => unuseSubscribefn();
-    }
-  }, [isDrivingBool]);
 
   return (
     <HomePresenter
