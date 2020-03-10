@@ -79,6 +79,7 @@ export const UPDATE_RIDE_STATUS = gql`
     UpdateRideStatus(rideId: $rideId, status: ACCEPTED) {
       ok
       error
+      rideId
     }
   }
 `;

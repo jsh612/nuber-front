@@ -36,7 +36,7 @@ interface ICoords {
   lng: number;
 }
 
-const HomeContainer: React.FC<IProps> = () => {
+const HomeContainer: React.FC<IProps> = ({ history }) => {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 
   const mapRef = useRef<HTMLDivElement>(null);
@@ -180,6 +180,7 @@ const HomeContainer: React.FC<IProps> = () => {
     const { RequestRide } = data;
     if (RequestRide.ok) {
       toast.success("Drive requested, finding a driver");
+      history.push(`/ride/${RequestRide.ride?.id}`);
     } else {
       toast.error(RequestRide.error);
     }
@@ -203,10 +204,18 @@ const HomeContainer: React.FC<IProps> = () => {
   );
 
   // updateRideStatus mutation
+  const handleRideAcceptance = (data: updateRideStatus) => {
+    const { UpdateRideStatus } = data;
+    if (UpdateRideStatus.ok) {
+      history.push(`/ride/${UpdateRideStatus.rideId}`);
+    }
+  };
   const [updateRideStatusMutation] = useMutation<
     updateRideStatus,
     updateRideStatusVariables
-  >(UPDATE_RIDE_STATUS);
+  >(UPDATE_RIDE_STATUS, {
+    onCompleted: handleRideAcceptance
+  });
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);

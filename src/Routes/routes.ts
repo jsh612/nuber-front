@@ -9,7 +9,7 @@ export default {
   EDIT_ACCOUNT: "/edit-account",
   ADD_PLACE: "/add-place",
   FIND_ADDRESS: "/find-address",
-  RIDE: "/ride",
+  RIDE: "/ride/:rideId",
   SETTINGS: "/settings",
   PLACES: "/places"
 } as const;
