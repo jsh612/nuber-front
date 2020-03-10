@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import MenuPresenter from "./MenuPresenter";
 import { useQuery, useMutation } from "@apollo/react-hooks";
 import { USER_PROFILE } from "../../sharedQueries.queries";
@@ -6,7 +6,17 @@ import { userProfile, toggleDrivingMode } from "../../types/api";
 import TOGGL_DRIVING from "./Menu.queries";
 
 const MenuContainer: React.FC = () => {
-  const { data, loading } = useQuery<userProfile>(USER_PROFILE);
+  const [isDrivingBool, setIsDrivingBool] = useState<boolean>(false);
+  const { data, loading } = useQuery<userProfile>(USER_PROFILE, {
+    onCompleted: data => {
+      if (data && data.GetMyProfile) {
+        setIsDrivingBool(data.GetMyProfile.user!.isDriving);
+        console.log("쿼리 성공시:", data.GetMyProfile.user!.isDriving);
+      } else {
+        console.log("없을시", data.GetMyProfile.user!.isDriving);
+      }
+    }
+  });
   const [toggleDrivingMutation] = useMutation<toggleDrivingMode>(
     TOGGL_DRIVING
     // - 강의에서는 cache값 변경을 통해 MenuPresenter에 운전여부 버튼을 변경시켰다.
@@ -46,6 +56,7 @@ const MenuContainer: React.FC = () => {
       data={data}
       loading={loading}
       toggleDrivingFn={toggleDrivingMutation}
+      drivingNow={isDrivingBool}
     />
   );
 };

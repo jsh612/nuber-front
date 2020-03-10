@@ -59,7 +59,7 @@ const HomeContainer: React.FC<IProps> = ({ history }) => {
   const [directions, setDirections] = useState<
     google.maps.DirectionsRenderer
   >();
-  const [isDriving, setIsDriving] = useState<boolean>(false);
+  const [isDrivingBool, setIsDriving] = useState<boolean>();
 
   // 운전자 마커 목록
   const driverMarkersList: google.maps.Marker[] = [];
@@ -140,7 +140,7 @@ const HomeContainer: React.FC<IProps> = ({ history }) => {
   useQuery<getNearbyDrivers>(GET_NEARBY_DRIVERS, {
     // pollInterval: 1000,
     // 로그인된 유저가 운전중일 경우에는 스킵(즉, 가까운거리의 운전자 표시 안함.)
-    skip: isDriving,
+    skip: isDrivingBool,
     onCompleted: handleNearbyDrivers,
     fetchPolicy: "cache-and-network"
   });
@@ -149,7 +149,7 @@ const HomeContainer: React.FC<IProps> = ({ history }) => {
   const { data: nearbyRide, subscribeToMore } = useQuery<getRides>(
     GET_NEARBY_RIDE,
     {
-      skip: !isDriving
+      skip: !isDrivingBool
     }
   );
   const rideSubscriptionOptions: SubscribeToMoreOptions<
@@ -424,11 +424,11 @@ const HomeContainer: React.FC<IProps> = ({ history }) => {
   }, [distance]);
 
   useEffect(() => {
-    if (isDriving) {
-      subscribeToMore(rideSubscriptionOptions);
+    if (isDrivingBool) {
+      const unuseSubscribefn = subscribeToMore(rideSubscriptionOptions);
+      return unuseSubscribefn;
     }
-  }, [isDriving]);
-
+  }, [isDrivingBool]);
   return (
     <HomePresenter
       isMenuOpen={isMenuOpen}

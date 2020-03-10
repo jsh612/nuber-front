@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import routes from "../../Routes/routes";
@@ -83,21 +83,24 @@ interface IProps {
   data?: userProfile;
   loading: boolean;
   toggleDrivingFn: MutationTuple<toggleDrivingMode, any>[0];
+  drivingNow: boolean;
 }
 
 const MenuPresenter: React.FC<IProps> = ({
   // data가 없는 경우에 대비한 구조 분해 할당
   data: { GetMyProfile: { user = null } = {} } = {},
   loading,
-  toggleDrivingFn
+  toggleDrivingFn,
+  drivingNow
 }) => {
-  const [isDrivingBool, setIsDrivingBool] = useState(
-    user ? user.isDriving : false
-  );
+  const [isDrivingBool, setIsDrivingBool] = useState<boolean>(drivingNow);
   const onClick = () => {
     toggleDrivingFn();
     setIsDrivingBool(!isDrivingBool);
   };
+  useEffect(() => {
+    setIsDrivingBool(drivingNow);
+  }, [drivingNow]);
   return (
     <Container>
       {!loading && user && user.fullName && (

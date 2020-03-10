@@ -11,7 +11,6 @@ import {
   requestRide,
   requestRideVariables,
   getRides,
-  getNearbyDrivers,
   updateRideStatus,
   updateRideStatusVariables
 } from "../../types/api";
