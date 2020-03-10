@@ -59,7 +59,7 @@ const HomeContainer: React.FC<IProps> = ({ history }) => {
   const [directions, setDirections] = useState<
     google.maps.DirectionsRenderer
   >();
-  const [isDrivingBool, setIsDriving] = useState<boolean>();
+  const [isDrivingBool, setIsDriving] = useState<boolean>(true);
 
   // 운전자 마커 목록
   const driverMarkersList: google.maps.Marker[] = [];
@@ -409,7 +409,7 @@ const HomeContainer: React.FC<IProps> = ({ history }) => {
       handleGeoCurrentSucces,
       handleGeoCurrentError
     );
-    console.log("지우기함수", unuseSubscribefn);
+    console.log(unuseSubscribefn);
     return unuseSubscribefn;
   }, []);
 
