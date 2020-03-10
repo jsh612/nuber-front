@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import { MutationTuple } from "@apollo/react-hooks";
 import Button from "../../Components/Button";
 import { TTheme } from "../../theme";
-import { Link } from "react-router-dom";
+import { Link, RouteComponentProps, useHistory } from "react-router-dom";
 import {
   getRide,
   userProfile,
@@ -11,6 +11,7 @@ import {
   updateRideVariables,
   StatusOptions
 } from "../../types/api.d";
+import routes from "../routes";
 
 const Container = styled.div`
   padding: 40px;
@@ -66,6 +67,12 @@ const RidePresenter: React.FC<IProps> = ({
   userData: { GetMyProfile: { user = null } = {} } = {},
   updateRideFn
 }) => {
+  const history = useHistory();
+  useEffect(() => {
+    if (ride && ride.status === "FINISHED") {
+      history.push(routes.HOME);
+    }
+  }, [ride]);
   return (
     <Container>
       {ride && user && (
@@ -75,7 +82,7 @@ const RidePresenter: React.FC<IProps> = ({
             <Img src={ride.passenger.profilePhoto!} />
             <Data>{ride.passenger.fullName!}</Data>
           </Passenger>
-          {ride.driver && (
+          {ride && ride?.driver && (
             <React.Fragment>
               <Title>Driver</Title>
               <Passenger>
@@ -96,40 +103,46 @@ const RidePresenter: React.FC<IProps> = ({
           <Data>{ride.duration}</Data>
           <Title>Status</Title>
           <Data>{ride.status}</Data>
-          <Buttons>
-            {ride.driver.id === user.id && ride.status === "ACCEPTED" && (
-              <ExtendedButton
-                value={"Picked Up"}
-                onClick={() =>
-                  updateRideFn({
-                    variables: {
-                      rideId: ride.id,
-                      status: StatusOptions.ONROUTE
+          {ride && (
+            <Buttons>
+              {ride.driver &&
+                ride.driver.id === user.id &&
+                ride.status === "ACCEPTED" && (
+                  <ExtendedButton
+                    value={"Picked Up"}
+                    onClick={() =>
+                      updateRideFn({
+                        variables: {
+                          rideId: ride.id,
+                          status: StatusOptions.ONROUTE
+                        }
+                      })
                     }
-                  })
-                }
-              />
-            )}
-            {ride.driver.id === user.id && ride.status === "ONROUTE" && (
-              <ExtendedButton
-                value={"Finished"}
-                onClick={() =>
-                  updateRideFn({
-                    variables: {
-                      rideId: ride.id,
-                      status: StatusOptions.FINISHED
-                    }
-                  })
-                }
-              />
-            )}
-            {ride.driver.id === user.id ||
-              (ride.passenger.id === user.id && ride.status === "ACCEPTED" && (
+                  />
+                )}
+              {ride.driver &&
+                ride.driver.id === user.id &&
+                ride.status === "ONROUTE" && (
+                  <ExtendedButton
+                    value={"Finished"}
+                    onClick={async () => {
+                      console.log("ride.id", ride.id);
+                      return updateRideFn({
+                        variables: {
+                          rideId: ride.id,
+                          status: StatusOptions.FINISHED
+                        }
+                      });
+                    }}
+                  />
+                )}
+              {ride.status !== "REQUESTING" && (
                 <Link to={`/chat/${ride.chatId}`}>
                   <ExtendedButton value={"Chat"} onClick={null} />
                 </Link>
-              ))}
-          </Buttons>
+              )}
+            </Buttons>
+          )}
         </React.Fragment>
       )}
     </Container>

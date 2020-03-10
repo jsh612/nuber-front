@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Sidebar from "react-sidebar";
 import Helmet from "react-helmet";
@@ -12,7 +12,8 @@ import {
   requestRideVariables,
   getRides,
   updateRideStatus,
-  updateRideStatusVariables
+  updateRideStatusVariables,
+  StatusOptions
 } from "../../types/api";
 import { MutationTuple } from "@apollo/react-hooks";
 import RidePopUp from "../../Components/RidePopUp";
@@ -88,6 +89,12 @@ const HomePresenter: React.FC<IProps> = ({
   nearbyRide: { GetNearbyRide: { ride = null } = {} } = {},
   acceptRideFn
 }) => {
+  const [finStatusBool, setFinStatusBool] = useState<boolean>(false);
+  useEffect(() => {
+    if (ride) {
+      setFinStatusBool(ride.status === "FINISHED");
+    }
+  }, [ride]);
   return (
     <Container>
       <Helmet>
@@ -135,7 +142,7 @@ const HomePresenter: React.FC<IProps> = ({
             value={price ? "Change address" : "Pick Address"}
           />
         )}
-        {ride && (
+        {ride && !finStatusBool && (
           <RidePopUp
             id={ride.id}
             pickUpAddress={ride.pickUpAddress}

@@ -68,9 +68,7 @@ const HomeContainer: React.FC<IProps> = ({ history }) => {
   const [reportMoveMutation] = useMutation<
     reportMovement,
     reportMovementVariables
-  >(REPORT_LOCATION, {
-    onCompleted: data => console.log("뮤테이션결과", data)
-  });
+  >(REPORT_LOCATION);
 
   // query user profile
   const handleProfileQuery = (data: userProfile) => {
@@ -138,7 +136,7 @@ const HomeContainer: React.FC<IProps> = ({ history }) => {
     }
   };
   useQuery<getNearbyDrivers>(GET_NEARBY_DRIVERS, {
-    // pollInterval: 1000,
+    pollInterval: 1000,
     // 로그인된 유저가 운전중일 경우에는 스킵(즉, 가까운거리의 운전자 표시 안함.)
     skip: isDrivingBool,
     onCompleted: handleNearbyDrivers,
