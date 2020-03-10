@@ -11,5 +11,6 @@ export default {
   FIND_ADDRESS: "/find-address",
   RIDE: "/ride/:rideId",
   SETTINGS: "/settings",
-  PLACES: "/places"
+  PLACES: "/places",
+  CHAT: "/chat/:chatId"
 } as const;
