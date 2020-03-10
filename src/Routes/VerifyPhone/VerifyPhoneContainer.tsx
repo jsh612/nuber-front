@@ -38,7 +38,6 @@ const VerifyPhoneContainer: React.FC<IProps> = ({ history, location }) => {
     },
     onCompleted: async data => {
       const { CompletePhoneVerification } = data;
-      console.log("data::::", data);
       if (CompletePhoneVerification.ok) {
         if (CompletePhoneVerification.token) {
           try {
@@ -47,7 +46,6 @@ const VerifyPhoneContainer: React.FC<IProps> = ({ history, location }) => {
                 token: CompletePhoneVerification.token
               }
             });
-            console.log("로그인 뮤테이션 완료");
           } catch (error) {
             console.log("Verify container / 내부 로그인 mutation", error);
           }

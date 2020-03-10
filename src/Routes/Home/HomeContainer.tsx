@@ -56,7 +56,7 @@ const HomeContainer: React.FC<IProps> = () => {
   const [directions, setDirections] = useState();
   const [isDriving, setIsDriving] = useState<boolean>(false);
 
-  // 운전자 정보
+  // 운전자 마커 목록
   const driverMarkersList: google.maps.Marker[] = [];
 
   // report Movement
@@ -92,7 +92,7 @@ const HomeContainer: React.FC<IProps> = () => {
         for (const driver of drivers) {
           if (driver && driver.lastLat && driver.lastLng) {
             // 해당 드라이버 마커 목록에 서버에서 받아온 driver가 있는지 확인
-            // (같은 드라이버가 여러가 마커로 표시 되는 것을 방지)
+            // (같은 드라이버가 여러개 마커로 표시 되는 것을 방지)
             const exisitingDriver:
               | google.maps.Marker
               | undefined = driverMarkersList.find(

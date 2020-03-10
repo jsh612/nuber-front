@@ -108,7 +108,7 @@ const HomePresenter: React.FC<IProps> = ({
       >
         {!loading && <MenuButton onClick={toggleMenu}>|||</MenuButton>}
         {user && !user.isDriving && (
-          <React.Fragment>
+          <>
             <AddressBar
               name={"toAddress"}
               onChange={toAddress.onChange}
@@ -120,7 +120,7 @@ const HomePresenter: React.FC<IProps> = ({
               disabled={toAddress.value === ""}
               value={price ? "Change address" : "Pick Address"}
             />
-          </React.Fragment>
+          </>
         )}
         {price && (
           <RequestButton
