@@ -424,11 +424,13 @@ const HomeContainer: React.FC<IProps> = ({ history }) => {
   }, [distance]);
 
   useEffect(() => {
+    // componentDidMount 될때 subscription 지워주기
     if (isDrivingBool) {
       const unuseSubscribefn = subscribeToMore(rideSubscriptionOptions);
-      return unuseSubscribefn;
+      return () => unuseSubscribefn();
     }
   }, [isDrivingBool]);
+
   return (
     <HomePresenter
       isMenuOpen={isMenuOpen}
