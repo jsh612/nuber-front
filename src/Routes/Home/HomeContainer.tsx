@@ -248,7 +248,7 @@ const HomeContainer: React.FC<IProps> = ({ history }) => {
     const {
       coords: { latitude: lat, longitude: lng }
     } = position;
-    // setCoords({ lat, lng });
+    setCoords({ lat, lng });
     // position의 변경에 따라 마커 위치와 맵의 중앙이 변화한다.
     userMarker?.setPosition({ lat, lng });
     itMap?.panTo({ lat, lng });
