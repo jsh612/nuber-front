@@ -36,8 +36,8 @@ const RideContainer: React.FC<RouteComponentProps> = ({ history }) => {
         rideId: Number(rideId)
       },
       onCompleted: data => {
-        console.log("bool값", !!data.GetRide.ride?.driver.id);
-        setIsAllData(!!data.GetRide.ride?.driver.id);
+        console.log("bool값", !!data.GetRide.ride?.driver?.id);
+        setIsAllData(!!data.GetRide.ride?.driver?.id);
       },
       onError: () => setIsAllData(false),
       fetchPolicy: "cache-and-network"
