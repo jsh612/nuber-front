@@ -150,8 +150,6 @@ export interface sendChatMessageVariables {
 export interface messageSubscription_MessageSubscription {
   __typename: "Message";
   id: number;
-  text: string;
-  userId: number | null;
 }
 
 export interface messageSubscription {

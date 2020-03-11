@@ -36,8 +36,6 @@ export const SUBSCRIBE_TO_MESSAGES = gql`
   subscription messageSubscription {
     MessageSubscription {
       id
-      text
-      userId
     }
   }
 `;

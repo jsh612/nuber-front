@@ -16,6 +16,7 @@ const Container = styled.div`
   align-self: ${(props: ISProps) => (props.mine ? "flex-end" : "flex-start")};
   border-bottom-right-radius: ${props => (props.mine ? "0px" : "20px")};
   border-bottom-left-radius: ${props => (!props.mine ? "0px" : "20px")};
+  margin-bottom: 10px;
 `;
 
 interface IProps {

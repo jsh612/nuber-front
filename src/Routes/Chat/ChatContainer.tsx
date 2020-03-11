@@ -1,17 +1,18 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { RouteComponentProps, useParams } from "react-router-dom";
 import routes from "../routes";
 import ChatPresenter from "./ChatPresenter";
-import { useQuery, useMutation } from "@apollo/react-hooks";
+import { useQuery, useMutation, useSubscription } from "@apollo/react-hooks";
 import { USER_PROFILE } from "../../sharedQueries.queries";
 import {
   userProfile,
   getChat,
   getChatVariables,
   sendChatMessage,
-  sendChatMessageVariables
+  sendChatMessageVariables,
+  messageSubscription
 } from "../../types/api";
-import { GET_CHAT, SEND_MESSAGE } from "./Chat.queries";
+import { GET_CHAT, SEND_MESSAGE, SUBSCRIBE_TO_MESSAGES } from "./Chat.queries";
 import useInput from "../../hooks/useInput";
 
 interface IProps extends RouteComponentProps {}
@@ -29,10 +30,11 @@ const ChatContainer: React.FC<IProps> = ({ history }) => {
   const { data: userData } = useQuery<userProfile>(USER_PROFILE);
 
   // chat query
-  const { data: chatData, loading: chatLoading } = useQuery<
-    getChat,
-    getChatVariables
-  >(GET_CHAT, {
+  const {
+    data: chatData,
+    loading: chatLoading,
+    refetch: chatRefetch
+  } = useQuery<getChat, getChatVariables>(GET_CHAT, {
     variables: {
       chatId: Number(chatId)
     }
@@ -43,6 +45,11 @@ const ChatContainer: React.FC<IProps> = ({ history }) => {
     sendChatMessage,
     sendChatMessageVariables
   >(SEND_MESSAGE);
+
+  // message subscription
+  const { loading: subsLoading, data: subsData } = useSubscription<
+    messageSubscription
+  >(SUBSCRIBE_TO_MESSAGES);
 
   const onSubmit = async () => {
     if (messageInput.value !== "" && messageInput.value) {
@@ -55,6 +62,11 @@ const ChatContainer: React.FC<IProps> = ({ history }) => {
       return;
     }
   };
+
+  useEffect(() => {
+    chatRefetch();
+  }, [subsData]);
+
   return (
     <ChatPresenter
       userData={userData}
