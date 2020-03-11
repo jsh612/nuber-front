@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { MutationTuple } from "@apollo/react-hooks";
 import Button from "../../Components/Button";
 import { TTheme } from "../../theme";
-import { Link, RouteComponentProps, useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import {
   getRide,
   userProfile,
@@ -136,11 +136,13 @@ const RidePresenter: React.FC<IProps> = ({
                     }}
                   />
                 )}
-              {ride.status !== "REQUESTING" && (
-                <Link to={`/chat/${ride.chatId}`}>
-                  <ExtendedButton value={"Chat"} onClick={null} />
-                </Link>
-              )}
+              {((ride.driver && ride.driver.id === user.id) ||
+                ride.passenger.id === user.id) &&
+                ride.status === "ACCEPTED" && (
+                  <Link to={`/chat/${ride.chatId}`}>
+                    <ExtendedButton value={"Chat"} onClick={null} />
+                  </Link>
+                )}
             </Buttons>
           )}
         </React.Fragment>

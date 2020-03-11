@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import HomePresenter from "./HomePresenter";
-import { useQuery, useMutation } from "@apollo/react-hooks";
+import { useQuery, useMutation, useSubscription } from "@apollo/react-hooks";
 import { USER_PROFILE } from "../../sharedQueries.queries";
 import {
   userProfile,
@@ -26,7 +26,6 @@ import {
   GET_NEARBY_RIDE,
   SUBSCRIBE_NEARBY_RIDES
 } from "./Home.queries";
-import { SubscribeToMoreOptions } from "apollo-boost";
 
 interface IProps extends RouteComponentProps {
   google: typeof google;
@@ -135,6 +134,8 @@ const HomeContainer: React.FC<IProps> = ({ history }) => {
       }
     }
   };
+
+  // query nearby drivers
   useQuery<getNearbyDrivers>(GET_NEARBY_DRIVERS, {
     pollInterval: 1000,
     // 로그인된 유저가 운전중일 경우에는 스킵(즉, 가까운거리의 운전자 표시 안함.)
@@ -144,34 +145,42 @@ const HomeContainer: React.FC<IProps> = ({ history }) => {
   });
 
   // query nearby rides
-  const { data: nearbyRide, subscribeToMore } = useQuery<getRides>(
-    GET_NEARBY_RIDE,
-    {
-      skip: !isDrivingBool
-    }
+  // const { data: nearbyRide, subscribeToMore } = useQuery<getRides>(
+  //   GET_NEARBY_RIDE,
+  //   {
+  //     skip: !isDrivingBool
+  //   }
+  // );
+  // const rideSubscriptionOptions: SubscribeToMoreOptions<
+  //   getRides,
+  //   any,
+  //   nearbyRides
+  // > = {
+  //   document: SUBSCRIBE_NEARBY_RIDES,
+  //   updateQuery: (preQueryData, { subscriptionData }) => {
+  //     if (!subscriptionData.data) {
+  //       return preQueryData;
+  //     }
+  //     // getRides쿼리 데이터를 연결된 subscribe를 통해 받아온 데이터로 업데이트
+  //     // (기존 쿼리 데이터와 합쳐지는 subscribe의 데이터는 쿼리 데이터의 구조와 같아야 한다.)
+  //     // (ex/ ride: XX)
+  //     const newObject = Object.assign({}, preQueryData, {
+  //       GetNearbyRide: {
+  //         ...preQueryData.GetNearbyRide, // 기존 쿼리 데이터
+  //         ride: subscriptionData.data.NearbyRideSubscription // subscribe로 받아온 새로운 데이터
+  //       }
+  //     });
+  //     return newObject;
+  //   }
+  // };
+  const { data: nearbyRide, refetch } = useQuery<getRides>(GET_NEARBY_RIDE, {
+    skip: !isDrivingBool
+  });
+
+  // subscribe nearby rides
+  const { loading: subscribeLoading } = useSubscription<nearbyRides>(
+    SUBSCRIBE_NEARBY_RIDES
   );
-  const rideSubscriptionOptions: SubscribeToMoreOptions<
-    getRides,
-    any,
-    nearbyRides
-  > = {
-    document: SUBSCRIBE_NEARBY_RIDES,
-    updateQuery: (preQueryData, { subscriptionData }) => {
-      if (!subscriptionData.data) {
-        return preQueryData;
-      }
-      // getRides쿼리 데이터를 연결된 subscribe를 통해 받아온 데이터로 업데이트
-      // (기존 쿼리 데이터와 합쳐지는 subscribe의 데이터는 쿼리 데이터의 구조와 같아야 한다.)
-      // (ex/ ride: XX)
-      const newObject = Object.assign({}, preQueryData, {
-        GetNearbyRide: {
-          ...preQueryData.GetNearbyRide, // 기존 쿼리 데이터
-          ride: subscriptionData.data.NearbyRideSubscription // subscribe로 받아온 새로운 데이터
-        }
-      });
-      return newObject;
-    }
-  };
 
   // requestRide mutation
   const handleRideRequest = (data: requestRide) => {
@@ -239,7 +248,7 @@ const HomeContainer: React.FC<IProps> = ({ history }) => {
     const {
       coords: { latitude: lat, longitude: lng }
     } = position;
-    setCoords({ lat, lng });
+    // setCoords({ lat, lng });
     // position의 변경에 따라 마커 위치와 맵의 중앙이 변화한다.
     userMarker?.setPosition({ lat, lng });
     itMap?.panTo({ lat, lng });
@@ -397,27 +406,18 @@ const HomeContainer: React.FC<IProps> = ({ history }) => {
     }
   };
 
-  const unuseSubscribefn = isDrivingBool
-    ? subscribeToMore(rideSubscriptionOptions)
-    : () => null;
-
   useEffect(() => {
     // 컴포넌트 렌더시 지도를 보여주기 위함
     navigator.geolocation.getCurrentPosition(
       handleGeoCurrentSucces,
       handleGeoCurrentError
     );
-    console.log(unuseSubscribefn);
-    return unuseSubscribefn;
   }, []);
 
-  // useEffect(() => {
-  //   // componentDidMount 될때 subscription 지워주기
-  //   if (isDrivingBool) {
-  //     const unuseSubscribefn = subscribeToMore(rideSubscriptionOptions);
-  //     return () => unuseSubscribefn();
-  //   }
-  // }, [isDrivingBool]);
+  useEffect(() => {
+    refetch();
+    console.log("여기서 리페치", nearbyRide);
+  }, [subscribeLoading]);
 
   useEffect(() => {
     // 유저 디비아시의 위치값 추적 시키기
