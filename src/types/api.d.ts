@@ -112,6 +112,58 @@ export interface getChatVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL mutation operation: sendChatMessage
+// ====================================================
+
+export interface sendChatMessage_SendChatMessage_message {
+  __typename: "Message";
+  id: number;
+  text: string;
+  userId: number | null;
+}
+
+export interface sendChatMessage_SendChatMessage {
+  __typename: "SendChatMessageResponse";
+  ok: boolean;
+  error: string | null;
+  message: sendChatMessage_SendChatMessage_message | null;
+}
+
+export interface sendChatMessage {
+  SendChatMessage: sendChatMessage_SendChatMessage;
+}
+
+export interface sendChatMessageVariables {
+  text: string;
+  chatId: number;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL subscription operation: messageSubscription
+// ====================================================
+
+export interface messageSubscription_MessageSubscription {
+  __typename: "Message";
+  id: number;
+  text: string;
+  userId: number | null;
+}
+
+export interface messageSubscription {
+  MessageSubscription: messageSubscription_MessageSubscription | null;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL mutation operation: updateProfile
 // ====================================================
 
