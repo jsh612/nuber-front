@@ -1,5 +1,6 @@
-Nuber Client
-Client for the (N)Uber Clone Course on Nomad Academy. ReactJS, Apollo, Typescript
+# 우버 클론 프론트
+## 주요 스택
+* ReactJS, Apollo, Typescript
 
 ## Screens:
 
